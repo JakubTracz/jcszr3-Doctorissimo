@@ -12,10 +12,10 @@ namespace DAL.Repositories
         private readonly DoctorissimoContext _dbContext;
         private readonly DbSet<TEntity> _entities;
 
-        public GenericRepository(DoctorissimoContext dbContext, DbSet<TEntity> entities)
+        protected GenericRepository(DoctorissimoContext dbContext)
         {
             _dbContext = dbContext;
-            _entities = entities;
+            _entities = _dbContext.Set<TEntity>();
         }
         public IQueryable<TEntity> GetAll()
         {

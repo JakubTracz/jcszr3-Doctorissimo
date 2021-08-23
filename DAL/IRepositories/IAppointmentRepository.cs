@@ -8,7 +8,7 @@ namespace DAL.IRepositories
     {
         Task<List<Appointment>> GetAllAppointmentsAsync();
         Task<Appointment> GetAppointmentByIdAsyncTask(int? id);
-        public Task CrateNewAppointment(Appointment appointment);
+        public Task CreateNewAppointment(Appointment appointment);
         public Task DeleteAppointment(int id);
         public Task UpdateAppointment(int id,Appointment appointment);
         public bool CheckIfAppointmentExists(int? id);

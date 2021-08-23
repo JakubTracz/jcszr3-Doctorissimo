@@ -11,7 +11,7 @@ namespace DAL.Repositories
 {
     public class PatientRepository:GenericRepository<Patient>,IPatientRepository
     {
-        public PatientRepository(DoctorissimoContext dbContext, DbSet<Patient> entities) : base(dbContext, entities)
+        public PatientRepository(DoctorissimoContext dbContext) : base(dbContext)
         {
         }
     }

@@ -54,7 +54,7 @@ namespace Doctorissimo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Doctor,Patient,AppointmentTime,Room,Diagnosis,Recommendations")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind("Id,AppointmentStatus,Doctor,Patient,AppointmentTime,Room,Diagnosis,Recommendations")] Appointment appointment)
         {
             if (!ModelState.IsValid) return View(appointment);
             await _appointmentService.AddNewAppointment(appointment);

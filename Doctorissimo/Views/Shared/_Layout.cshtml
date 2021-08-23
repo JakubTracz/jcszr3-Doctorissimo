@@ -24,8 +24,27 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="Index">Appointments</a>
+                        <li>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Manage Appointments
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Appointments" asp-action="Index">Show all appointments</a>
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Appointments" asp-action="Create">Create new appointment</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Manage Patients
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Patients" asp-action="Index">Show all patients</a>
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Patients" asp-action="Create">Register new patient</a>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>

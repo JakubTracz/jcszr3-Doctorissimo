@@ -9,7 +9,7 @@ namespace DAL.Repositories
 {
     public class AppointmentRepository:GenericRepository<Appointment>,IAppointmentRepository
     {
-        public AppointmentRepository(DoctorissimoContext dbContext, DbSet<Appointment> entities) : base(dbContext, entities)
+        public AppointmentRepository(DoctorissimoContext dbContext) : base(dbContext)
         {
         }
 
@@ -18,7 +18,7 @@ namespace DAL.Repositories
             return GetByIdAsync(id);
         }
 
-        public Task CrateNewAppointment(Appointment appointment)
+        public Task CreateNewAppointment(Appointment appointment)
         {
             return CreateAsync(appointment);
         }

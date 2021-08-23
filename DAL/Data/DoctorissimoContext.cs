@@ -13,8 +13,8 @@ namespace DAL.Data
             base.OnModelCreating(builder);
 
         }
-        public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Patient> Patients { get; set; }
-        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Appointment> Appointment { get; set; }
+        public DbSet<Patient> Patient { get; set; }
+        public DbSet<Doctor> Doctor { get; set; }
     }
 }

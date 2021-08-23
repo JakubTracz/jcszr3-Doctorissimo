@@ -29,7 +29,7 @@ namespace BLL.Services
 
         public Task AddNewAppointment(Appointment appointment)
         {
-            return _appointmentRepository.CrateNewAppointment(appointment);
+            return _appointmentRepository.CreateNewAppointment(appointment);
         }
 
         public Task DeleteAppointment(int id)
