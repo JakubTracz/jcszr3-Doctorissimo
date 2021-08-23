@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BLL.IServices;
 using DAL.IRepositories;
@@ -17,34 +15,34 @@ namespace BLL.Services
             _patientRepository = patientRepository;
         }
 
-        public IQueryable<Patient> GetAllPatients()
+        public async Task<List<Patient>> GetAllPatients()
         {
-            return _patientRepository.GetAll();
+            return await _patientRepository.GetAllPatientsAsync();
         }
 
-        public Task<Patient> GetPatientByIdAsync(int? id)
+        public async Task<Patient> GetPatientByIdAsync(int? id)
         {
-            return _patientRepository.GetByIdAsync(id);
+            return await _patientRepository.GetPatientByIdAsyncTask(id);
         }
 
         public Task AddNewPatient(Patient patient)
         {
-            return _patientRepository.CreateAsync(patient);
+            return _patientRepository.CreateNewPatient(patient);
         }
 
         public Task DeletePatient(int id)
         {
-            return _patientRepository.DeleteAsync(id);
+            return _patientRepository.DeletePatient(id);
         }
 
         public Task UpdatePatient(int id, Patient patient)
         {
-            return _patientRepository.UpdateAsync(id, patient);
+            return _patientRepository.UpdatePatient(id, patient);
         }
 
         public bool CheckIfPatientExists(int? id)
         {
-            return _patientRepository.CheckIfExists(id);
+            return _patientRepository.CheckIfPatientExists(id);
         }
     }
 }

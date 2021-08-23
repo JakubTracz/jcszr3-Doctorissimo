@@ -1,6 +1,4 @@
-using System;
-
-namespace Doctorissimo.Models
+namespace DAL.Models
 {
     public class ErrorViewModel
     {

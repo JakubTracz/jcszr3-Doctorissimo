@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BLL.IServices;
 using DAL.IRepositories;
@@ -45,6 +43,11 @@ namespace BLL.Services
         public bool CheckIfAppointmentExists(int? id)
         {
             return _appointmentRepository.CheckIfAppointmentExists(id);
+        }
+
+        public Task BookAppointment(int id, Appointment appointment)
+        {
+            return _appointmentRepository.BookAppointment(id, appointment);
         }
     }
 }

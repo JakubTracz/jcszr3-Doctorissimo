@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using DAL.IRepositories;
 using DAL.Models;
 
 namespace BLL.IServices
@@ -13,7 +10,8 @@ namespace BLL.IServices
         public Task<Appointment> GetAppointmentByIdAsync(int? id);
         public Task AddNewAppointment(Appointment appointment);
         public Task DeleteAppointment(int id);
-        public Task UpdateAppointment(int id,Appointment appointment);
+        public Task UpdateAppointment(int id, Appointment appointment);
         public bool CheckIfAppointmentExists(int? id);
+        public Task BookAppointment(int id, Appointment appointment);
     }
 }

@@ -38,6 +38,11 @@ namespace DAL.Repositories
             return CheckIfExists(id);
         }
 
+        public Task BookAppointment(int id, Appointment appointment)
+        {
+            return UpdateAppointment(id, appointment);
+        }
+
         public Task<List<Appointment>> GetAllAppointmentsAsync()
         {
             return GetAll().ToListAsync();

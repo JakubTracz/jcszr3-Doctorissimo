@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BLL.IServices;
-using DAL.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DAL.Models;
+using DAL.Models.ViewModels;
 
 namespace Doctorissimo.Controllers
 {
     public class AppointmentsController : Controller
     {
         private readonly IAppointmentService _appointmentService;
-
-        public AppointmentsController(DoctorissimoContext context, IAppointmentService appointmentService)
+        private readonly IPatientService _patientService;
+        public AppointmentsController(IAppointmentService appointmentService, IPatientService patientService)
         {
             _appointmentService = appointmentService;
+            _patientService = patientService;
         }
 
         // GET: Appointments
@@ -50,8 +47,6 @@ namespace Doctorissimo.Controllers
         }
 
         // POST: Appointments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,AppointmentStatus,Doctor,Patient,AppointmentTime,Room,Diagnosis,Recommendations")] Appointment appointment)
@@ -78,8 +73,6 @@ namespace Doctorissimo.Controllers
         }
 
         // POST: Appointments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Doctor,Patient,AppointmentTime,Room,Diagnosis,Recommendations")] Appointment appointment)
@@ -132,5 +125,28 @@ namespace Doctorissimo.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> BookAppointment(int? id)
+        {
+            {
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                BookAppointmentViewModel bookAppointmentViewModel = new();
+                var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+                if (appointment == null)
+                {
+                    return NotFound();
+                }
+                bookAppointmentViewModel.Appointment = appointment;
+                var patients = await _patientService.GetAllPatients();
+                if (patients == null)
+                {
+                    return NotFound();
+                }
+                return View(bookAppointmentViewModel);
+            }
+        }
     }
 }

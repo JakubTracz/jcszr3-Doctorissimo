@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BLL.IServices;
+﻿using BLL.IServices;
 using Microsoft.Extensions.DependencyInjection;
 using DAL.IRepositories;
 using DAL.Repositories;

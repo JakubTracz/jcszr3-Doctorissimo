@@ -12,6 +12,7 @@ namespace DAL.IRepositories
         public Task DeleteAppointment(int id);
         public Task UpdateAppointment(int id,Appointment appointment);
         public bool CheckIfAppointmentExists(int? id);
-        
+        public Task BookAppointment(int id, Appointment appointment);
+
     }
 }
