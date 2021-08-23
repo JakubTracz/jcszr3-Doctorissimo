@@ -7,10 +7,10 @@ namespace DAL.IRepositories
     public interface IPatientRepository:IGenericRepository<Patient>
     {
         Task<List<Patient>> GetAllPatientsAsync();
-        Task<Patient> GetPatientByIdAsyncTask(int? id);
-        public Task CreateNewPatient(Patient patient);
-        public Task DeletePatient(int id);
-        public Task UpdatePatient(int id,Patient patient);
+        Task<Patient> GetPatientByIdAsync(int? id);
+        public Task CreateNewPatientAsync(Patient patient);
+        public Task DeletePatientAsync(int id);
+        public Task UpdatePatientAsync(int id,Patient patient);
         public bool CheckIfPatientExists(int? id);
     }
 }

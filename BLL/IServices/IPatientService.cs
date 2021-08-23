@@ -6,11 +6,11 @@ namespace BLL.IServices
 {
     public interface IPatientService
     {
-        public Task<List<Patient>> GetAllPatients();
+        public Task<List<Patient>> GetAllPatientsAsync();
         public Task<Patient> GetPatientByIdAsync(int? id);
-        public Task AddNewPatient(Patient patient);
-        public Task DeletePatient(int id);
-        public Task UpdatePatient(int id, Patient patient);
+        public Task AddNewPatientAsync(Patient patient);
+        public Task DeletePatientAsync(int id);
+        public Task UpdatePatientAsync(int id, Patient patient);
         public bool CheckIfPatientExists(int? id);
     }
 }

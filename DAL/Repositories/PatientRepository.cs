@@ -14,22 +14,22 @@ namespace DAL.Repositories
         {
         }
 
-        public Task<Patient> GetPatientByIdAsyncTask(int? id)
+        public Task<Patient> GetPatientByIdAsync(int? id)
         {
             return GetByIdAsync(id);
         }
 
-        public Task CreateNewPatient(Patient patient)
+        public Task CreateNewPatientAsync(Patient patient)
         {
             return CreateAsync(patient);
         }
 
-        public Task DeletePatient(int id)
+        public Task DeletePatientAsync(int id)
         {
             return DeleteAsync(id);
         }
 
-        public Task UpdatePatient(int id, Patient patient)
+        public Task UpdatePatientAsync(int id, Patient patient)
         {
             return UpdateAsync(id, patient);
         }

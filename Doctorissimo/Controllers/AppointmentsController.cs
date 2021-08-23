@@ -49,15 +49,14 @@ namespace Doctorissimo.Controllers
         // POST: Appointments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AppointmentStatus,Doctor,Patient,AppointmentTime,Room,Diagnosis,Recommendations")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind("Id,AppointmentStatus,Doctor,AppointmentTime,Room")] Appointment appointment)
         {
             if (!ModelState.IsValid) return View(appointment);
-            await _appointmentService.AddNewAppointment(appointment);
+            await _appointmentService.AddNewAppointmentAsync(appointment);
             return RedirectToAction(nameof(Index));
         }
-
         // GET: Appointments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> DoctorEdit(int? id)
         {
             if (id == null)
             {
@@ -75,7 +74,7 @@ namespace Doctorissimo.Controllers
         // POST: Appointments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Doctor,Patient,AppointmentTime,Room,Diagnosis,Recommendations")] Appointment appointment)
+        public async Task<IActionResult> DoctorEdit(int id, [Bind("Id,Doctor,Patient,AppointmentTime,Room")] Appointment appointment)
         {
             if (id != appointment.Id)
             {
@@ -85,7 +84,50 @@ namespace Doctorissimo.Controllers
             if (!ModelState.IsValid) return View(appointment);
             try
             {
-                await _appointmentService.UpdateAppointment(id, appointment);
+                await _appointmentService.UpdateAppointmentAsync(id, appointment);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_appointmentService.CheckIfAppointmentExists(appointment.Id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Appointments/Edit/5
+        public async Task<IActionResult> AdminEdit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+            return View(appointment);
+        }
+
+        // POST: Appointments/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdminEdit(int id, [Bind("Id,Doctor,Patient,AppointmentTime,Room")] Appointment appointment)
+        {
+            if (id != appointment.Id)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid) return View(appointment);
+            try
+            {
+                await _appointmentService.UpdateAppointmentAsync(id, appointment);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -121,32 +163,54 @@ namespace Doctorissimo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _appointmentService.DeleteAppointment(id);
+            await _appointmentService.DeleteAppointmentAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> BookAppointment(int? id)
+        public async Task<IActionResult> BookAppointment(int id)
         {
             {
-                if (id == null)
-                {
-                    return NotFound();
-                }
-
-                BookAppointmentViewModel bookAppointmentViewModel = new();
                 var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
                 if (appointment == null)
                 {
                     return NotFound();
                 }
-                bookAppointmentViewModel.Appointment = appointment;
-                var patients = await _patientService.GetAllPatients();
+
+                BookAppointmentViewModel bookAppointmentViewModel = new(appointment);
+                var patients = await _patientService.GetAllPatientsAsync();
                 if (patients == null)
                 {
                     return NotFound();
                 }
+
+                bookAppointmentViewModel.Patients = patients;
                 return View(bookAppointmentViewModel);
             }
         }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> BookAppointment(int id, [Bind("Patient")] Appointment appointment)
+        //{
+        //    if (id != appointment.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (!ModelState.IsValid) return View(appointment);
+        //    try
+        //    {
+        //        await _appointmentService.UpdateAppointment(id, appointment);
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!_appointmentService.CheckIfAppointmentExists(appointment.Id))
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        throw;
+        //    }
+        //    return RedirectToAction(nameof(Index));
+        //}
     }
 }

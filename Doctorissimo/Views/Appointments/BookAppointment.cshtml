@@ -4,9 +4,7 @@
     ViewData["Title"] = "Book Appointment";
 }
 
-<h1>Book</h1>
-
-<h4>BookAppointmentViewModel</h4>
+<h1>Book Appointment</h1>
 <hr />
 <div>
     <h4>Appointment</h4>
@@ -16,13 +14,19 @@
             @Html.DisplayNameFor(model => model.Appointment.AppointmentStatus)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.AppointmentTime)
+            @Html.DisplayFor(model => model.Appointment.AppointmentStatus)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Appointment.Doctor)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Room)
+            @Html.DisplayFor(model => model.Appointment.Doctor)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Appointment.AppointmentTime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Appointment.AppointmentTime)
         </dd>
     </dl>
 </div>
@@ -34,8 +38,8 @@
                 <select name="listbox" id="listbox">
                     @foreach (var item in Model.Patients)
                     {
-                        <option value="@item.FirstName">
-                            @item.FirstName 
+                        <option value="@item.MailAddress">
+                            @item.MailAddress
                         </option>                  
                     }
                 </select>

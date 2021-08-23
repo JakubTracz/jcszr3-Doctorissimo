@@ -1,27 +1,27 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using BLL.IServices;
 using DAL.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Doctorissimo.Controllers
 {
-    public class PatientsController : Controller
+    public class DoctorsController : Controller
     {
-        private readonly IPatientService _patientService;
+        private readonly IDoctorService _doctorService;
 
-        public PatientsController(IPatientService patientService)
+        public DoctorsController(IDoctorService doctorService)
         {
-            _patientService = patientService;
+            _doctorService = doctorService;
         }
 
-        // GET: patients
+        // GET: doctors
         public async Task<IActionResult> Index()
         {
-            return View(await _patientService.GetAllPatientsAsync());
+            return View(await _doctorService.GetAllDoctorsAsync());
         }
 
-        // GET: patients/Details/5
+        // GET: doctors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -29,34 +29,34 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var patient = await _patientService.GetPatientByIdAsync(id);
-            if (patient == null)
+            var doctor = await _doctorService.GetDoctorByIdAsync(id);
+            if (doctor == null)
             {
                 return NotFound();
             }
 
-            return View(patient);
+            return View(doctor);
         }
 
-        // GET: patients/Create
+        // GET: doctors/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: patients/Create
+        // POST: doctors/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,DateOfBirth,MailAddress,Address,Appointments,Prescriptions")] Patient patient)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Specialty")] Doctor doctor)
         {
-            if (!ModelState.IsValid) return View(patient);
-            await _patientService.AddNewPatientAsync(patient);
+            if (!ModelState.IsValid) return View(doctor);
+            await _doctorService.AddNewDoctorAsync(doctor);
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: patients/Edit/5
+        // GET: doctors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -64,32 +64,32 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var patient = await _patientService.GetPatientByIdAsync(id);
-            if (patient == null)
+            var doctor = await _doctorService.GetDoctorByIdAsync(id);
+            if (doctor == null)
             {
                 return NotFound();
             }
-            return View(patient);
+            return View(doctor);
         }
 
-        // POST: patients/Edit/5
+        // POST: doctors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,DateOfBirth,MailAddress,Address,Appointments,Prescriptions")] Patient patient)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Specialty")] Doctor doctor)
         {
-            if (id != patient.Id)
+            if (id != doctor.Id)
             {
                 return NotFound();
             }
 
-            if (!ModelState.IsValid) return View(patient);
+            if (!ModelState.IsValid) return View(doctor);
             try
             {
-                await _patientService.UpdatePatientAsync(id,patient);
+                await _doctorService.UpdateDoctorAsync(id,doctor);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_patientService.CheckIfPatientExists(id))
+                if (!_doctorService.CheckIfDoctorExists(id))
                 {
                     return NotFound();
                 }
@@ -101,7 +101,7 @@ namespace Doctorissimo.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: patients/Delete/5
+        // GET: doctors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -109,21 +109,21 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var patient = await _patientService.GetPatientByIdAsync(id);
-            if (patient == null)
+            var doctor = await _doctorService.GetDoctorByIdAsync(id);
+            if (doctor == null)
             {
                 return NotFound();
             }
 
-            return View(patient);
+            return View(doctor);
         }
 
-        // POST: patients/Delete/5
+        // POST: doctors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _patientService.DeletePatientAsync(id);
+            await _doctorService.DeleteDoctorAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

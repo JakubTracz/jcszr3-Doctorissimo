@@ -8,10 +8,9 @@ namespace BLL.IServices
     {
         public Task<List<Appointment>> GetAllAppointments();
         public Task<Appointment> GetAppointmentByIdAsync(int? id);
-        public Task AddNewAppointment(Appointment appointment);
-        public Task DeleteAppointment(int id);
-        public Task UpdateAppointment(int id, Appointment appointment);
+        public Task AddNewAppointmentAsync(Appointment appointment);
+        public Task DeleteAppointmentAsync(int id);
+        public Task UpdateAppointmentAsync(int id, Appointment appointment);
         public bool CheckIfAppointmentExists(int? id);
-        public Task BookAppointment(int id, Appointment appointment);
     }
 }

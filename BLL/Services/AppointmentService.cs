@@ -22,32 +22,27 @@ namespace BLL.Services
 
         public async Task<Appointment> GetAppointmentByIdAsync(int? id)
         {
-            return await _appointmentRepository.GetAppointmentByIdAsyncTask(id);
+            return await _appointmentRepository.GetAppointmentByIdAsync(id);
         }
 
-        public Task AddNewAppointment(Appointment appointment)
+        public Task AddNewAppointmentAsync(Appointment appointment)
         {
-            return _appointmentRepository.CreateNewAppointment(appointment);
+            return _appointmentRepository.CreateNewAppointmentAsync(appointment);
         }
 
-        public Task DeleteAppointment(int id)
+        public Task DeleteAppointmentAsync(int id)
         {
-            return _appointmentRepository.DeleteAppointment(id);
+            return _appointmentRepository.DeleteAppointmentAsync(id);
         }
 
-        public Task UpdateAppointment(int id, Appointment appointment)
+        public Task UpdateAppointmentAsync(int id, Appointment appointment)
         {
-            return _appointmentRepository.UpdateAppointment(id, appointment);
+            return _appointmentRepository.UpdateAppointmentAsync(id, appointment);
         }
 
         public bool CheckIfAppointmentExists(int? id)
         {
             return _appointmentRepository.CheckIfAppointmentExists(id);
-        }
-
-        public Task BookAppointment(int id, Appointment appointment)
-        {
-            return _appointmentRepository.BookAppointment(id, appointment);
         }
     }
 }

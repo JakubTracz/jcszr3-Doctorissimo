@@ -13,22 +13,22 @@ namespace DAL.Repositories
         {
         }
 
-        public Task<Appointment> GetAppointmentByIdAsyncTask(int? id)
+        public Task<Appointment> GetAppointmentByIdAsync(int? id)
         {
             return GetByIdAsync(id);
         }
 
-        public Task CreateNewAppointment(Appointment appointment)
+        public Task CreateNewAppointmentAsync(Appointment appointment)
         {
             return CreateAsync(appointment);
         }
 
-        public Task DeleteAppointment(int id)
+        public Task DeleteAppointmentAsync(int id)
         {
             return DeleteAsync(id);
         }
 
-        public Task UpdateAppointment(int id, Appointment appointment)
+        public Task UpdateAppointmentAsync(int id, Appointment appointment)
         {
             return UpdateAsync(id, appointment);
         }
@@ -36,11 +36,6 @@ namespace DAL.Repositories
         public bool CheckIfAppointmentExists(int? id)
         {
             return CheckIfExists(id);
-        }
-
-        public Task BookAppointment(int id, Appointment appointment)
-        {
-            return UpdateAppointment(id, appointment);
         }
 
         public Task<List<Appointment>> GetAllAppointmentsAsync()

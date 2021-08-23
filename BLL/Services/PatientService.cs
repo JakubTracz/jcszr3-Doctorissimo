@@ -15,29 +15,29 @@ namespace BLL.Services
             _patientRepository = patientRepository;
         }
 
-        public async Task<List<Patient>> GetAllPatients()
+        public async Task<List<Patient>> GetAllPatientsAsync()
         {
             return await _patientRepository.GetAllPatientsAsync();
         }
 
         public async Task<Patient> GetPatientByIdAsync(int? id)
         {
-            return await _patientRepository.GetPatientByIdAsyncTask(id);
+            return await _patientRepository.GetPatientByIdAsync(id);
         }
 
-        public Task AddNewPatient(Patient patient)
+        public Task AddNewPatientAsync(Patient patient)
         {
-            return _patientRepository.CreateNewPatient(patient);
+            return _patientRepository.CreateNewPatientAsync(patient);
         }
 
-        public Task DeletePatient(int id)
+        public Task DeletePatientAsync(int id)
         {
-            return _patientRepository.DeletePatient(id);
+            return _patientRepository.DeletePatientAsync(id);
         }
 
-        public Task UpdatePatient(int id, Patient patient)
+        public Task UpdatePatientAsync(int id, Patient patient)
         {
-            return _patientRepository.UpdatePatient(id, patient);
+            return _patientRepository.UpdatePatientAsync(id, patient);
         }
 
         public bool CheckIfPatientExists(int? id)

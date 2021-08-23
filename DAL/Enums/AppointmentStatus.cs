@@ -6,8 +6,9 @@ namespace DAL.Enums
     {
         Available = 0,
         Booked = 1,
+        Completed = 2,
         [Display(Name = "In progress")]
-        InProgress = 2,
-        Completed = 3,
+        InProgress = 3,
+        
     }
 }
