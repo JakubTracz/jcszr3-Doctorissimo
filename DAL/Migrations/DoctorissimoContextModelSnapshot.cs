@@ -35,16 +35,10 @@ namespace DAL.Migrations
                     b.Property<string>("Diagnosis")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Doctor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DoctorId")
+                    b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Patient")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PatientId")
+                    b.Property<int>("PatientId")
                         .HasColumnType("int");
 
                     b.Property<string>("Recommendations")
@@ -59,7 +53,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Appointment");
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("DAL.Models.Doctor", b =>
@@ -80,7 +74,37 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Doctor");
+                    b.ToTable("Doctors");
+                });
+
+            modelBuilder.Entity("DAL.Models.MedicalTest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Doctor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Operator")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Patient")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TestDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MedicalTests");
                 });
 
             modelBuilder.Entity("DAL.Models.Medication", b =>
@@ -109,7 +133,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("PrescriptionId");
 
-                    b.ToTable("Medication");
+                    b.ToTable("Medications");
                 });
 
             modelBuilder.Entity("DAL.Models.Patient", b =>
@@ -136,7 +160,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Patient");
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("DAL.Models.Prescription", b =>
@@ -178,18 +202,26 @@ namespace DAL.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Prescription");
+                    b.ToTable("Prescriptions");
                 });
 
             modelBuilder.Entity("DAL.Models.Appointment", b =>
                 {
-                    b.HasOne("DAL.Models.Doctor", null)
+                    b.HasOne("DAL.Models.Doctor", "Doctor")
                         .WithMany("Appointments")
-                        .HasForeignKey("DoctorId");
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DAL.Models.Patient", null)
+                    b.HasOne("DAL.Models.Patient", "Patient")
                         .WithMany("Appointments")
-                        .HasForeignKey("PatientId");
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("DAL.Models.Medication", b =>

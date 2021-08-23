@@ -74,7 +74,7 @@ namespace Doctorissimo.Controllers
         // POST: Appointments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DoctorEdit(int id, [Bind("Id,Doctor,Patient,AppointmentTime,Room")] Appointment appointment)
+        public async Task<IActionResult> DoctorEdit(int id, [Bind("Id,AppointmentStatus,Recommendations")] Appointment appointment)
         {
             if (id != appointment.Id)
             {
@@ -117,7 +117,7 @@ namespace Doctorissimo.Controllers
         // POST: Appointments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AdminEdit(int id, [Bind("Id,Doctor,Patient,AppointmentTime,Room")] Appointment appointment)
+        public async Task<IActionResult> AdminEdit(int id, [Bind("Id,AppointmentStatus,Doctor,Patient,AppointmentTime,Room")] Appointment appointment)
         {
             if (id != appointment.Id)
             {
@@ -199,7 +199,7 @@ namespace Doctorissimo.Controllers
         //    if (!ModelState.IsValid) return View(appointment);
         //    try
         //    {
-        //        await _appointmentService.UpdateAppointment(id, appointment);
+        //        await _appointmentService.UpdateAppointmentAsync(id, appointment);
         //    }
         //    catch (DbUpdateConcurrencyException)
         //    {

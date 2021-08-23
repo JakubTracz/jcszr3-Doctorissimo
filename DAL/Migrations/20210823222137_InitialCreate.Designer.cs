@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DoctorissimoContext))]
-    [Migration("20210823154900_AddAttributesForAppointmentAndPatient")]
-    partial class AddAttributesForAppointmentAndPatient
+    [Migration("20210823222137_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,16 +37,10 @@ namespace DAL.Migrations
                     b.Property<string>("Diagnosis")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Doctor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DoctorId")
+                    b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Patient")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PatientId")
+                    b.Property<int>("PatientId")
                         .HasColumnType("int");
 
                     b.Property<string>("Recommendations")
@@ -61,7 +55,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Appointment");
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("DAL.Models.Doctor", b =>
@@ -77,12 +71,12 @@ namespace DAL.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Specialty")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Specialty")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Doctor");
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("DAL.Models.Medication", b =>
@@ -138,7 +132,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Patient");
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("DAL.Models.Prescription", b =>
@@ -185,13 +179,21 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Models.Appointment", b =>
                 {
-                    b.HasOne("DAL.Models.Doctor", null)
+                    b.HasOne("DAL.Models.Doctor", "Doctor")
                         .WithMany("Appointments")
-                        .HasForeignKey("DoctorId");
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DAL.Models.Patient", null)
+                    b.HasOne("DAL.Models.Patient", "Patient")
                         .WithMany("Appointments")
-                        .HasForeignKey("PatientId");
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("DAL.Models.Medication", b =>

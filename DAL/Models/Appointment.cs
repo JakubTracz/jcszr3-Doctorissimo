@@ -9,7 +9,6 @@ namespace DAL.Models
 {
     public class Appointment :IEntity
     {
-
         public Appointment()
         {
             AppointmentStatus = AppointmentStatus.Available;
@@ -19,11 +18,14 @@ namespace DAL.Models
         public int Id { get; set; }
         [DisplayName("Status")]
         public AppointmentStatus AppointmentStatus { get; set; }
-        public string Doctor { get; set; }
-        public string Patient { get; set; }
+
         [DisplayName("Appointment time")]
         [DataType(DataType.DateTime)]
         public DateTime AppointmentTime { get; set; }
+        public int PatientId { get; set; }
+        public int DoctorId { get; set; }
+        public Patient Patient { get; set; }
+        public Doctor Doctor { get; set; }
         public string Room { get; set; }
         public string Diagnosis { get; set; }
         public string Recommendations { get; set; }

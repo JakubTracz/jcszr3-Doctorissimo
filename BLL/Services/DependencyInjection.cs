@@ -9,6 +9,7 @@ namespace BLL.Services
     {
         public static IServiceCollection AddServicesCollection(this IServiceCollection services)
         {
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IAppointmentRepository,AppointmentRepository>();
             services.AddTransient<IPatientRepository,PatientRepository>();
             services.AddTransient<IDoctorRepository,DoctorRepository>();
