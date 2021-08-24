@@ -44,5 +44,9 @@ namespace BLL.Services
         {
             return _doctorRepository.CheckIfDoctorExists(id);
         }
+        public Task GetDoctorIdAsync(int? id)
+        {
+            return _doctorRepository.GetDoctorByIdAsyncTask(id);
+        }
     }
 }

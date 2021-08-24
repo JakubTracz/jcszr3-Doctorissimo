@@ -12,5 +12,6 @@ namespace BLL.IServices
         public Task DeleteAppointmentAsync(int id);
         public Task UpdateAppointmentAsync(int id, Appointment appointment);
         public bool CheckIfAppointmentExists(int? id);
+        
     }
 }

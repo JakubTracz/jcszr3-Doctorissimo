@@ -12,5 +12,6 @@ namespace BLL.IServices
         public Task DeleteDoctorAsync(int id);
         public Task UpdateDoctorAsync(int id, Doctor doctor);
         public bool CheckIfDoctorExists(int? id);
+        public Task GetDoctorIdAsync(int? id);
     }
 }
