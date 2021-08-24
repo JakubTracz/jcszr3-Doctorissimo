@@ -39,6 +39,11 @@ namespace DAL.Repositories
             return CheckIfExists(id);
         }
 
+        public Task<Patient> GetPatientByEmail(string mail)
+        {
+            return _entities.SingleAsync(patient => patient.MailAddress == mail);
+        }
+
         public Task<List<Patient>> GetAllPatientsAsync()
         {
             return GetAll().ToListAsync();

@@ -12,5 +12,6 @@ namespace DAL.IRepositories
         public Task DeletePatientAsync(int id);
         public Task UpdatePatientAsync(int id,Patient patient);
         public bool CheckIfPatientExists(int? id);
+        public Task<Patient> GetPatientByEmail(string mail);
     }
 }

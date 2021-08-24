@@ -9,8 +9,8 @@ namespace DAL.Repositories
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IEntity, new()
     {
-        private readonly DoctorissimoContext _dbContext;
-        private readonly DbSet<TEntity> _entities;
+        protected readonly DoctorissimoContext _dbContext;
+        protected readonly DbSet<TEntity> _entities;
 
         protected GenericRepository(DoctorissimoContext dbContext)
         {

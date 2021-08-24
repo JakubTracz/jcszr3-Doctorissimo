@@ -28,15 +28,20 @@
     <div class="col-md-4">
         <form asp-action="BookAppointment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Appointment.Id" />
             <div class="form-group">
-                <select name="listbox" id="listbox">
+                <select asp-for="selectedPatientMail" 
+                        asp-items="@(new SelectList(Model.Patients,"MailAddress","MailAddress"))">
+                    <option>Please select one</option>
+                </select>
+@*                <select asp-for="selectedPatientMail" name="listbox" id="listbox">
                     @foreach (var item in Model.Patients)
                     {
                         <option value="@item.MailAddress">
-                            @item.MailAddress
-                        </option>                  
+                            @item.FirstName @item.LastName
+                        </option>
                     }
-                </select>
+                </select>*@
                 <span asp-validation-for="Patients" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -20,7 +20,7 @@ namespace Doctorissimo.Controllers
         // GET: Appointments
         public async Task<IActionResult> Index()
         {
-            return View(await _appointmentService.GetAllAppointments());
+            return View(await _appointmentService.GetAll());
         }
 
         // GET: Appointments/Details/5
@@ -176,7 +176,7 @@ namespace Doctorissimo.Controllers
                     return NotFound();
                 }
 
-                BookAppointmentViewModel bookAppointmentViewModel = new(appointment);
+                BookAppointmentViewModel bookAppointmentViewModel = new() {Appointment = appointment};
                 var patients = await _patientService.GetAllPatientsAsync();
                 if (patients == null)
                 {
@@ -187,30 +187,21 @@ namespace Doctorissimo.Controllers
                 return View(bookAppointmentViewModel);
             }
         }
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> BookAppointment(int id, [Bind("Patient")] Appointment appointment)
-        //{
-        //    if (id != appointment.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (!ModelState.IsValid) return View(appointment);
-        //    try
-        //    {
-        //        await _appointmentService.UpdateAppointmentAsync(id, appointment);
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!_appointmentService.CheckIfAppointmentExists(appointment.Id))
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        throw;
-        //    }
-        //    return RedirectToAction(nameof(Index));
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BookAppointment(BookAppointmentViewModel bookAppointmentViewModel)
+        {
+            //odpytać serwis o taki app z tym ID
+            //if (bookAppointmentViewModel.Appointment.Id != appointment.Id)
+            //{
+            //    return NotFound();
+            //}
+            
+            if (!ModelState.IsValid) return View(bookAppointmentViewModel);
+            var appointment = bookAppointmentViewModel.Appointment;
+            await _appointmentService.AssignPatientToAppointment(appointment.Id,
+                bookAppointmentViewModel.selectedPatientMail);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

@@ -9,13 +9,15 @@ namespace BLL.Services
     public class AppointmentService : IAppointmentService
     {
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IPatientRepository _patientRepository;
 
-        public AppointmentService(IAppointmentRepository appointmentRepository)
+        public AppointmentService(IAppointmentRepository appointmentRepository,IPatientRepository patientRepository)
         {
             _appointmentRepository = appointmentRepository;
+            _patientRepository = patientRepository;
         }
 
-        public async Task<List<Appointment>> GetAllAppointments()
+        public async Task<List<Appointment>> GetAll()
         {
             return await _appointmentRepository.GetAllAppointmentsAsync();
         }
@@ -45,6 +47,12 @@ namespace BLL.Services
             return _appointmentRepository.CheckIfAppointmentExists(id);
         }
 
-
+        public async Task AssignPatientToAppointment(int id, string patientMail)
+        {
+            var appointment = await GetAppointmentByIdAsync(id);
+            var patient = await _patientRepository.GetPatientByEmail(patientMail);
+            appointment.PatientId = patient.Id;
+            await _appointmentRepository.UpdateAppointmentAsync(id, appointment);
+        }
     }
 }
