@@ -1,4 +1,5 @@
-﻿@model DAL.Models.Appointment
+﻿@using DAL.Models.ViewModels
+@model DAL.Models.ViewModels.CreateAppointmentViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -13,14 +14,21 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="AppointmentTime" class="control-label"></label>
-                <input asp-for="AppointmentTime" class="form-control" />
-                <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                <label asp-for="Appointment.AppointmentTime" class="control-label"></label>
+                <input asp-for="Appointment.AppointmentTime" class="form-control" />
+                <span asp-validation-for="Appointment.AppointmentTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Room" class="control-label"></label>
-                <input asp-for="Room" class="form-control" />
-                <span asp-validation-for="Room" class="text-danger"></span>
+                <label asp-for="Appointment.Room" class="control-label"></label>
+                <input asp-for="Appointment.Room" class="form-control" />
+                <span asp-validation-for="Appointment.Room" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedDoctorId" class="control-label">Please select a doctor</label>
+                <select asp-for="SelectedDoctorId"
+                        asp-items="@(new SelectList(Model.Doctors, "Id", "FullName"))">
+                    <option>Please select one</option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

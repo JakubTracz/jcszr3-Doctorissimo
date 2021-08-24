@@ -17,5 +17,7 @@ namespace DAL.Models
         public DoctorSpecialty Specialty { get; set; }
         public List<Appointment> Appointments { get; set; }
         public List<Prescription> Prescriptions { get; set; }
+        [Display(Name = "Doctor")]
+        public string FullName => FirstName + " " + LastName;
     }
 }

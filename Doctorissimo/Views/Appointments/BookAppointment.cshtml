@@ -34,14 +34,6 @@
                         asp-items="@(new SelectList(Model.Patients,"MailAddress","MailAddress"))">
                     <option>Please select one</option>
                 </select>
-@*                <select asp-for="selectedPatientMail" name="listbox" id="listbox">
-                    @foreach (var item in Model.Patients)
-                    {
-                        <option value="@item.MailAddress">
-                            @item.FirstName @item.LastName
-                        </option>
-                    }
-                </select>*@
                 <span asp-validation-for="Patients" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BLL.IServices;
+using DAL.Enums;
 using DAL.IRepositories;
 using DAL.Models;
 
@@ -52,6 +53,7 @@ namespace BLL.Services
             var appointment = await GetAppointmentByIdAsync(id);
             var patient = await _patientRepository.GetPatientByEmail(patientMail);
             appointment.PatientId = patient.Id;
+            appointment.AppointmentStatus = AppointmentStatus.Booked;
             await _appointmentRepository.UpdateAppointmentAsync(id, appointment);
         }
     }
