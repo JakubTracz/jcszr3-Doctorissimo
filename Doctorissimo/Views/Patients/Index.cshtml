@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<DAL.Models.Patient>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Patients";
 }
 
-<h1>Index</h1>
+<h1>Patients</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -27,7 +27,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.MailAddress)
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>

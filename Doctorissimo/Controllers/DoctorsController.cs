@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BLL.IServices;
 using DAL.Enums;
 using DAL.Models;
+using DAL.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Doctorissimo.Controllers
@@ -132,7 +133,13 @@ namespace Doctorissimo.Controllers
         }
         public async Task<IActionResult> PatientSearchDoctorsResult(Doctor doctor)
         {
-            return View(await _doctorService.GetDoctorsBySpecialtyAsync(doctor.Specialty));
+            var doctors = await _doctorService.GetDoctorsBySpecialtyAsync(doctor.Specialty);
+            var patientSearchDoctorsViewModel = new PatientSearchDoctorsViewModel()
+            {
+                DoctorSpecialty = doctor.Specialty,
+                Doctors = doctors
+            };
+            return View(patientSearchDoctorsViewModel);
         }
     }
 }

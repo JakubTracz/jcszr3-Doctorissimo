@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.Data;
 using DAL.IRepositories;
@@ -46,7 +47,7 @@ namespace DAL.Repositories
 
         public Task<List<Patient>> GetAllPatientsAsync()
         {
-            return GetAll().ToListAsync();
+            return GetAll().OrderBy(p =>p.FirstName).ToListAsync();
         }
     }
 }

@@ -24,10 +24,10 @@
                 <span asp-validation-for="Appointment.Room" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SelectedDoctorId" class="control-label">Please select a doctor</label>
+                <label asp-for="SelectedDoctorId" class="control-label">Doctor</label>
                 <select asp-for="SelectedDoctorId"
-                        asp-items="@(new SelectList(Model.Doctors, "Id", "FullName"))">
-                    <option>Please select one</option>
+                        asp-items="@(new SelectList(Model.Doctors, "Id", "FullName"))" class="form-control">
+                    <option>Please select a doctor</option>
                 </select>
             </div>
             <div class="form-group">

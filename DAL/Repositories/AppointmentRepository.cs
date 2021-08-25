@@ -61,7 +61,7 @@ namespace DAL.Repositories
 
         public Task<List<Appointment>> GetAllAppointmentsAsync()
         {
-            return GetAll().ToListAsync();
+            return GetAll().OrderBy(a => a.Id).ToListAsync();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace DAL.Repositories
 
         public Task<List<Doctor>> GetAllDoctorsAsync()
         {
-            return GetAll().ToListAsync();
+            return GetAll().OrderBy(d =>d.FirstName).ToListAsync();
         }
 
         public Task<Doctor> GetDoctorByIdAsyncTask(int? id)
