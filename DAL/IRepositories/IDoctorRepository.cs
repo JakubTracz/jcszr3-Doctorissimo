@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using DAL.Enums;
 using DAL.Models;
 
 namespace DAL.IRepositories
@@ -12,5 +14,6 @@ namespace DAL.IRepositories
         public Task DeleteDoctorAsync(int id);
         public Task UpdateDoctorAsync(int id,Doctor doctor);
         public bool CheckIfDoctorExists(int? id);
+        public Task<List<Doctor>> GetDoctorsBySpecialtyAsync(DoctorSpecialty doctorSpecialty);
     }
 }

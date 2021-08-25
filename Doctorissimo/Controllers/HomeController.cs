@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using DAL.Enums;
 using DAL.Models;
 
 namespace Doctorissimo.Controllers
@@ -31,3 +33,8 @@ namespace Doctorissimo.Controllers
         }
     }
 }
+//public async Task<IActionResult> PatientSearchDoctorsResult(DoctorSpecialty doctorSpecialty)
+//{
+
+//    return View(await _doctorService.GetDoctorsBySpecialtyAsync(doctorSpecialty));
+//}

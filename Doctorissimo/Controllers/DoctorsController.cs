@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using BLL.IServices;
+using DAL.Enums;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -93,10 +94,8 @@ namespace Doctorissimo.Controllers
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
             return RedirectToAction(nameof(Index));
         }
@@ -125,6 +124,15 @@ namespace Doctorissimo.Controllers
         {
             await _doctorService.DeleteDoctorAsync(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult PatientSearchDoctors()
+        {
+            return View();
+        }
+        public async Task<IActionResult> PatientSearchDoctorsResult(Doctor doctor)
+        {
+            return View(await _doctorService.GetDoctorsBySpecialtyAsync(doctor.Specialty));
         }
     }
 }

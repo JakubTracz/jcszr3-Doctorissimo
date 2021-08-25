@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BLL.IServices;
+using DAL.Enums;
 using DAL.IRepositories;
 using DAL.Models;
 
@@ -44,9 +45,11 @@ namespace BLL.Services
         {
             return _doctorRepository.CheckIfDoctorExists(id);
         }
-        public Task GetDoctorIdAsync(int? id)
+
+        public Task<List<Doctor>> GetDoctorsBySpecialtyAsync(DoctorSpecialty doctorSpecialty)
         {
-            return _doctorRepository.GetDoctorByIdAsyncTask(id);
+            return _doctorRepository.GetDoctorsBySpecialtyAsync(doctorSpecialty);
         }
+
     }
 }

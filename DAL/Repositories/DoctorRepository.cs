@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.Data;
+using DAL.Enums;
 using DAL.IRepositories;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +43,11 @@ namespace DAL.Repositories
         public bool CheckIfDoctorExists(int? id)
         {
             throw new System.NotImplementedException();
+        }
+
+        public async Task<List<Doctor>> GetDoctorsBySpecialtyAsync(DoctorSpecialty doctorSpecialty)
+        {
+            return await DbContext.Doctors.Select(d => d).Where(d => d.Specialty == doctorSpecialty).ToListAsync();
         }
     }
 }
