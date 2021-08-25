@@ -41,7 +41,7 @@ namespace DAL.Repositories
 
         public Task<Patient> GetPatientByEmail(string mail)
         {
-            return _entities.SingleAsync(patient => patient.MailAddress == mail);
+            return Entities.SingleAsync(patient => patient.MailAddress == mail);
         }
 
         public Task<List<Patient>> GetAllPatientsAsync()

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using DAL.Entities;
 using DAL.Enums;
 
@@ -18,6 +19,8 @@ namespace DAL.Models
         public List<Appointment> Appointments { get; set; }
         public List<Prescription> Prescriptions { get; set; }
         [Display(Name = "Doctor")]
+        [NotMapped]
         public string FullName => FirstName + " " + LastName;
+
     }
 }

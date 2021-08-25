@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using DAL.Models;
+using DAL.Models.ViewModels;
 
 namespace BLL.IServices
 {
     public interface IAppointmentService
     {
-        public Task<List<Appointment>> GetAll();
-        public Task<Appointment> GetAppointmentByIdAsync(int? id);
-        public Task AddNewAppointmentAsync(Appointment appointment);
-        public Task DeleteAppointmentAsync(int id);
-        public Task UpdateAppointmentAsync(int id, Appointment appointment);
-        public bool CheckIfAppointmentExists(int? id);
+        public Task<List<Appointment>> GetAllAsync();
+        public Task<Appointment> GetByIdAsync(int? id);
+        public Task CreateAsync(Appointment appointment);
+        public Task DeleteAsync(int id);
+        public Task UpdateAsync(int id, Appointment appointment);
+        public bool CheckIfExists(int? id);
         public Task AssignPatientToAppointment(int id,string patientMail);
-
+        public Appointment PopulateAppointmentModel(CreateAppointmentViewModel createAppointmentViewModel);
+        public Task<List<AppointmentsListViewModel>> GetAppointmentsWithDoctorsAsync();
     }
 }

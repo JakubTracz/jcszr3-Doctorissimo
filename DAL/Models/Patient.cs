@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using DAL.Entities;
 
 namespace DAL.Models
@@ -23,5 +24,7 @@ namespace DAL.Models
         public string Address { get; set; }
         public List<Appointment> Appointments { get; set; }
         public List<Prescription> Prescriptions { get; set; }
+        [NotMapped]
+        public string FullName => FirstName + " " + LastName;
     }
 }

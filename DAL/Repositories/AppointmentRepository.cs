@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.Data;
 using DAL.IRepositories;
 using DAL.Models;
+using DAL.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace DAL.Repositories
 {
-    public class AppointmentRepository:GenericRepository<Appointment>,IAppointmentRepository
+    public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
     {
         public AppointmentRepository(DoctorissimoContext dbContext) : base(dbContext)
         {
@@ -36,6 +40,23 @@ namespace DAL.Repositories
         public bool CheckIfAppointmentExists(int? id)
         {
             return CheckIfExists(id);
+        }
+
+        public async Task<List<AppointmentsListViewModel>> GetAppointmentsWithDoctorsAsync()
+        {
+            var result = await DbContext.Appointments.Select(a =>
+                    new AppointmentsListViewModel
+                    {
+                        Id = a.Id,
+                        AppointmentStatus = a.AppointmentStatus,
+                        AppointmentTime = a.AppointmentTime,
+                        Room = a.Room,
+                        DoctorFullName = a.Doctor.FullName,
+                        PatientFullName = a.Patient.FullName
+                    })
+                .OrderBy(a => a.Id)
+                .ToListAsync();
+            return result;
         }
 
         public Task<List<Appointment>> GetAllAppointmentsAsync()

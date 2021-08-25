@@ -9,45 +9,45 @@ namespace DAL.Repositories
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IEntity, new()
     {
-        protected readonly DoctorissimoContext _dbContext;
-        protected readonly DbSet<TEntity> _entities;
+        protected readonly DoctorissimoContext DbContext;
+        protected readonly DbSet<TEntity> Entities;
 
         protected GenericRepository(DoctorissimoContext dbContext)
         {
-            _dbContext = dbContext;
-            _entities = _dbContext.Set<TEntity>();
+            DbContext = dbContext;
+            Entities = DbContext.Set<TEntity>();
         }
         public IQueryable<TEntity> GetAll()
         {
-            return _entities.AsNoTracking();
+            return Entities.AsNoTracking();
         }
 
         public async Task<TEntity> GetByIdAsync(int? id)
         {
-            return await _entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+            return await Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task CreateAsync(TEntity entity)
         {
-            await _entities.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
+            await Entities.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(int id, TEntity entity)
         {
-            _entities.Update(entity);
-            await _dbContext.SaveChangesAsync();
+            Entities.Update(entity);
+            await DbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
             var entity = await GetByIdAsync(id);
-            _entities.Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            Entities.Remove(entity);
+            await DbContext.SaveChangesAsync();
         }
         public bool CheckIfExists(int? id)
         {
-            return  _entities.Any(e => e.Id == id);
+            return  Entities.Any(e => e.Id == id);
         }
     }
 }

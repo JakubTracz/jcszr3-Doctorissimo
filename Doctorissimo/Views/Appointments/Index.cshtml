@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DAL.Models.Appointment>
+﻿@model IEnumerable<DAL.Models.ViewModels.AppointmentsListViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,10 +19,13 @@
             @Html.DisplayNameFor(model => model.AppointmentTime)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Doctor.FullName)
+            @Html.DisplayNameFor(model => model.DoctorFullName)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Room)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PatientFullName)
         </th>
         <th></th>
     </tr>
@@ -37,10 +40,13 @@
             @Html.DisplayFor(modelItem => item.AppointmentTime)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Doctor.FullName)
+            @Html.DisplayFor(modelItem => item.DoctorFullName)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Room)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PatientFullName)
         </td>
         <td>
             <a asp-action="BookAppointment" asp-route-id="@item.Id">Book</a> | 

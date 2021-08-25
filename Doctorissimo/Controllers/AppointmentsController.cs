@@ -23,7 +23,9 @@ namespace Doctorissimo.Controllers
         // GET: Appointments
         public async Task<IActionResult> Index()
         {
-            return View(await _appointmentService.GetAll());
+            var test = await _appointmentService.GetAppointmentsWithDoctorsAsync();
+            //return View(await _appointmentService.GetAllAsync());
+            return View(test);
         }
 
         // GET: Appointments/Details/5
@@ -34,7 +36,7 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+            var appointment = await _appointmentService.GetByIdAsync(id);
             if (appointment == null)
             {
                 return NotFound();
@@ -56,11 +58,9 @@ namespace Doctorissimo.Controllers
        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateAppointmentViewModel createAppointmentViewModel)
         {
-            var appointment = createAppointmentViewModel.Appointment;
-            appointment.DoctorId = createAppointmentViewModel.SelectedDoctorId;
-            appointment.PatientId = null;
             if (!ModelState.IsValid) return View(createAppointmentViewModel);
-            await _appointmentService.AddNewAppointmentAsync(appointment);
+            var appointment = _appointmentService.PopulateAppointmentModel(createAppointmentViewModel);
+            await _appointmentService.CreateAsync(appointment);
             return RedirectToAction(nameof(Index));
         }
         // GET: Appointments/Edit/5
@@ -71,7 +71,7 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+            var appointment = await _appointmentService.GetByIdAsync(id);
             if (appointment == null)
             {
                 return NotFound();
@@ -92,11 +92,11 @@ namespace Doctorissimo.Controllers
             if (!ModelState.IsValid) return View(appointment);
             try
             {
-                await _appointmentService.UpdateAppointmentAsync(id, appointment);
+                await _appointmentService.UpdateAsync(id, appointment);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_appointmentService.CheckIfAppointmentExists(appointment.Id))
+                if (!_appointmentService.CheckIfExists(appointment.Id))
                 {
                     return NotFound();
                 }
@@ -114,7 +114,7 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+            var appointment = await _appointmentService.GetByIdAsync(id);
             if (appointment == null)
             {
                 return NotFound();
@@ -135,11 +135,11 @@ namespace Doctorissimo.Controllers
             if (!ModelState.IsValid) return View(appointment);
             try
             {
-                await _appointmentService.UpdateAppointmentAsync(id, appointment);
+                await _appointmentService.UpdateAsync(id, appointment);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_appointmentService.CheckIfAppointmentExists(appointment.Id))
+                if (!_appointmentService.CheckIfExists(appointment.Id))
                 {
                     return NotFound();
                 }
@@ -157,7 +157,7 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+            var appointment = await _appointmentService.GetByIdAsync(id);
             if (appointment == null)
             {
                 return NotFound();
@@ -171,14 +171,14 @@ namespace Doctorissimo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _appointmentService.DeleteAppointmentAsync(id);
+            await _appointmentService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> BookAppointment(int id)
         {
             {
-                var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+                var appointment = await _appointmentService.GetByIdAsync(id);
                 if (appointment == null)
                 {
                     return NotFound();
