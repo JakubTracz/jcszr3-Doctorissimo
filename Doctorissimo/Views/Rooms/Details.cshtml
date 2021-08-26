@@ -1,0 +1,62 @@
+﻿@model DAL.Models.ViewModels.RoomDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Patient</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+</div>
+@if (Model.Appointments != null)
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointments[0].AppointmentTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointments[0].Doctor.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointments[0].Patient.FullName)
+            </th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Appointments) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Doctor.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Patient.FullName)
+                </td>
+                <td>
+                    <a asp-controller="Appointments" asp-action="AdminEdit" asp-route-id="@item.">Edit</a> |
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No appointments booked in this room.</p>
+}
+

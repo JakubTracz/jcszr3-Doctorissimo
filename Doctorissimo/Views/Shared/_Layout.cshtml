@@ -57,6 +57,15 @@
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Doctors" asp-action="PatientSearchDoctors">Search doctors</a>
                                 </div>
                             </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Manage Rooms
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Rooms" asp-action="Index">Show all rooms</a>
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Rooms" asp-action="Create">Add new room</a>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>

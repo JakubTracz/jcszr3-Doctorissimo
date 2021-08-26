@@ -25,6 +25,7 @@ namespace DAL.Models
         public List<Appointment> Appointments { get; set; }
         public List<Prescription> Prescriptions { get; set; }
         [NotMapped]
+        [DisplayName("Patient")]
         public string FullName => FirstName + " " + LastName;
     }
 }

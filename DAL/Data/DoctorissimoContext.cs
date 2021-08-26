@@ -20,5 +20,6 @@ namespace DAL.Data
         public DbSet<Prescription> Prescriptions { get; set; }
         public DbSet<Medication> Medications { get; set; }
         public DbSet<MedicalTest> MedicalTests { get; set; }
+        public DbSet<Room> Rooms { get; set; }
     }
 }

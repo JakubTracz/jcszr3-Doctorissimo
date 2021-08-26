@@ -13,10 +13,11 @@ namespace BLL.Services
             services.AddTransient<IAppointmentRepository,AppointmentRepository>();
             services.AddTransient<IPatientRepository,PatientRepository>();
             services.AddTransient<IDoctorRepository,DoctorRepository>();
+            services.AddTransient<IRoomRepository, RoomRepository>();
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IPatientService, PatientService>();
             services.AddTransient<IDoctorService, DoctorService>();
-
+            services.AddTransient<IRoomService, RoomService>();
             return services;
         }
     }
