@@ -19,6 +19,8 @@ namespace DAL.Models.ViewModels
         public DateTime AppointmentTime { get; set; }
         [DisplayName("Doctor")]
         public string DoctorFullName { get; set; }
+        public int? DoctorId { get; set; }
+        public int? RoomId { get; set; }
         [DisplayName("Patient")]
         public string PatientFullName { get; set; }
         public string Room { get; set; }

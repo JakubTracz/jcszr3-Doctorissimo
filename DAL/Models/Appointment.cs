@@ -23,11 +23,11 @@ namespace DAL.Models
         [DataType(DataType.DateTime)]
         public DateTime AppointmentTime { get; set; }
         public int? PatientId { get; set; }
-        public int DoctorId { get; set; }
+        public int? DoctorId { get; set; }
         public int? RoomId { get; set; }
         public Patient Patient { get; set; }
         public Doctor Doctor { get; set; }
-        public string Room { get; set; }
+        public Room Room { get; set; }
         public string Diagnosis { get; set; }
         public string Recommendations { get; set; }
         public List<Prescription> Prescriptions { get; set; }

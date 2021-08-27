@@ -1,5 +1,5 @@
 ﻿@using DAL.Enums
-@model DAL.Models.Appointment
+@model DAL.Models.ViewModels.AdminEditAppointmentViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -13,21 +13,30 @@
     <div class="col-md-4">
         <form asp-action="AdminEdit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Appointment.Id" />
             <div class="form-group">
-                <label asp-for="AppointmentTime" class="control-label"></label>
-                <input asp-for="AppointmentTime" class="form-control" />
-                <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                <label asp-for="Appointment.AppointmentTime" class="control-label"></label>
+                <input asp-for="Appointment.AppointmentTime" class="form-control" />
+                <span asp-validation-for="Appointment.AppointmentTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Room" class="control-label"></label>
-                <input asp-for="Room" class="form-control" />
-                <span asp-validation-for="Room" class="text-danger"></span>
+                <label asp-for="SelectedRoomId" class="control-label">Room</label>
+                <select asp-for="SelectedRoomId"
+                        asp-items="@(new SelectList(Model.Rooms, "Id", "Name",Model.Room.Name))" class="form-control">
+                </select>
+                <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AppointmentStatus" class="control-label"></label>
-                <select asp-for="@Model.AppointmentStatus" asp-items="Html.GetEnumSelectList<AppointmentStatus>()" class="form-control"></select>
-                <span asp-validation-for="Room" class="text-danger"></span>
+                <label asp-for="SelectedDoctorId" class="control-label">Doctor</label>
+                <select asp-for="SelectedDoctorId"
+                        asp-items="@(new SelectList(Model.Doctors, "Id", "FullName",Model.Doctor.FullName))" class="form-control">
+                    <option>@Model.Doctor.FullName</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Appointment.AppointmentStatus" class="control-label"></label>
+                <select asp-for="@Model.Appointment.AppointmentStatus" asp-items="Html.GetEnumSelectList<AppointmentStatus>()" class="form-control"></select>
+                <span asp-validation-for="Appointment.AppointmentStatus" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

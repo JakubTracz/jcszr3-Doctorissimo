@@ -10,9 +10,9 @@ namespace DAL.Models.ViewModels
         //modele DTO
         [DisplayName("Patient name")]
         public int SelectedPatientId { get; set; }
-        //[Required()]
-        public string selectedPatientMail { get; set; }
+        public Doctor Doctor { get; set; }
         public List<Patient> Patients { get; set; }
         public Appointment Appointment { get; set; }
+        public Room Room { get; set; }
     }
 }

@@ -49,10 +49,10 @@ namespace BLL.Services
             return _appointmentRepository.CheckIfAppointmentExists(id);
         }
 
-        public async Task AssignPatientToAppointment(int id, string patientMail)
+        public async Task AssignPatientToAppointment(int id, int patientId)
         {
             var appointment = await _appointmentRepository.GetByIdAsync(id);
-            var patient = await _patientRepository.GetPatientByEmail(patientMail);
+            var patient = await _patientRepository.GetPatientByIdAsync(patientId);
             appointment.PatientId = patient.Id;
             appointment.AppointmentStatus = AppointmentStatus.Booked;
             await _appointmentRepository.UpdateAppointmentAsync(id, appointment);
@@ -63,6 +63,7 @@ namespace BLL.Services
             var appointment = createAppointmentViewModel.Appointment;
             appointment.AppointmentStatus = AppointmentStatus.Available;
             appointment.DoctorId = createAppointmentViewModel.SelectedDoctorId;
+            appointment.RoomId = createAppointmentViewModel.SelectedRoomId;
             appointment.PatientId = null;
             return appointment;
         }

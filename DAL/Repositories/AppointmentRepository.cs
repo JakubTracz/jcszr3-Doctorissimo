@@ -50,15 +50,28 @@ namespace DAL.Repositories
                         Id = a.Id,
                         AppointmentStatus = a.AppointmentStatus,
                         AppointmentTime = a.AppointmentTime,
-                        Room = a.Room,
+                        Room = a.Room.Name,
                         DoctorFullName = a.Doctor.FullName,
-                        PatientFullName = a.Patient.FullName
+                        PatientFullName = a.Patient.FullName,
+                        DoctorId = a.DoctorId,
+                        RoomId = a.RoomId
+
                     })
                 .OrderBy(a => a.Id)
                 .ToListAsync();
             return result;
         }
-
+        //public AppointmentsListViewModel GetRoomAndDoctor(int id)
+        //{
+        //    var result = DbContext.Appointments
+        //        .Where(a => a.Id == id)
+        //        .Select(a => new AppointmentsListViewModel
+        //        {
+        //            Room = a.Room.Name,
+        //            DoctorFullName = a.Doctor.FullName,
+        //        });
+        //    return result;
+        //}
         public Task<List<Appointment>> GetAllAppointmentsAsync()
         {
             return GetAll().OrderBy(a => a.Id).ToListAsync();
