@@ -1,13 +1,13 @@
 ﻿@model DAL.Models.ViewModels.RoomDetailsViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Room Details";
 }
 
 <h1>Details</h1>
 
 <div>
-    <h4>Patient</h4>
+    <h4>Room</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -18,8 +18,10 @@
         </dd>
     </dl>
 </div>
-@if (Model.Appointments != null)
+<hr />
+@if (Model.Appointments.Count >0)
 {
+    <h4>Scheduled appointments</h4>
     <table class="table">
         <thead>
         <tr>
@@ -48,7 +50,7 @@
                     @Html.DisplayFor(modelItem => item.Patient.FullName)
                 </td>
                 <td>
-                    <a asp-controller="Appointments" asp-action="AdminEdit" asp-route-id="@item.">Edit</a> |
+                    <a asp-controller="Appointments" asp-action="AdminEdit" asp-route-id="@item.">Edit</a>
                 </td>
             </tr>
         }

@@ -41,6 +41,14 @@
                     @Html.DisplayFor(modelItem => item.AppointmentTime)
                 </td>
                 <td>
+                    @Html.ActionLink(
+                Html.DisplayNameFor(modelItem => item.Room),
+                "Details",
+                "Rooms",
+                new
+                {
+                id = item.RoomId
+                },null)
                     @Html.DisplayFor(modelItem => item.Room)
                 </td>
                 <td>
