@@ -40,7 +40,7 @@
                     @Html.DisplayFor(modelItem => item.Specialty)
                 </td>
                 <td>
-                    <button class="btn btn-info mb-2" onclick="myFunction()" type="button">Info</button>
+                    <button class="btn btn-info mb-2" onclick="ToggleRowDisplay()" type="button">Info</button>
                     <a asp-action="Details" asp-route-id="@item.Id">Show available appointments</a>
                 </td>
             </tr>
