@@ -22,6 +22,16 @@ namespace Doctorissimo.Controllers
         {
             return View(await _doctorService.GetAllDoctorsAsync());
         }
+        public async Task<IActionResult> PatientsViewIndex(Doctor doctor)
+        {
+            var doctors = await _doctorService.GetDoctorsBySpecialtyAsync(doctor.Specialty);
+            var patientSearchDoctorsViewModel = new PatientSearchDoctorsViewModel()
+            {
+                DoctorSpecialty = doctor.Specialty,
+                Doctors = doctors
+            };
+            return View(patientSearchDoctorsViewModel);
+        }
 
         // GET: doctors/Details/5
         public async Task<IActionResult> Details(int? id)

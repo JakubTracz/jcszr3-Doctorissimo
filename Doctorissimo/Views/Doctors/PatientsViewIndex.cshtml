@@ -1,0 +1,55 @@
+﻿@model DAL.Models.ViewModels.PatientSearchDoctorsViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+<style type="text/css">.table-row-hidden {display: none }</style>
+<script>
+    function myFunctionLocal() {
+        const x = $1(this).closest("tr");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+</script>
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Doctor
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoctorSpecialty)
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Doctors)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Specialty)
+                </td>
+                <td>
+                    <button class="btn btn-info mb-2" onclick="myFunction()" type="button">Info</button>
+                    <a asp-action="Details" asp-route-id="@item.Id">Show available appointments</a>
+                </td>
+            </tr>
+            <tr class="">
+                <td class="border-0">
+                    <div>@Html.DisplayFor(modelItem => item.FullName) is a very good doctor</div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@*table-row-hidden*@

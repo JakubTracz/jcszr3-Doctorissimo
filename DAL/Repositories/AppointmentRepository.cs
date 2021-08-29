@@ -52,9 +52,10 @@ namespace DAL.Repositories
                         AppointmentTime = a.AppointmentTime,
                         Room = a.Room.Name,
                         DoctorFullName = a.Doctor.FullName,
-                        PatientFullName = a.Patient.FullName,
+                        PatientFullName = a.Patient.FullName ?? string.Empty,
                         DoctorId = a.DoctorId,
-                        RoomId = a.RoomId
+                        RoomId = a.RoomId,
+                        PatientId = a.PatientId
 
                     })
                 .OrderBy(a => a.Id)

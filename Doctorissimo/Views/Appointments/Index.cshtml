@@ -69,16 +69,16 @@
                 </td>
                 <td>
                     @Html.ActionLink(
-                "Book",
-                "BookAppointment",
-                "Appointments",
-                new
-                {
-                item.Id,
-                item.DoctorId,
-                item.RoomId
-                },null
-                ) |
+                        "Book",
+                        "BookAppointment",
+                        "Appointments",
+                        new
+                        {
+                            item.Id,
+                            item.DoctorId,
+                            item.RoomId
+                        },null
+                        ) |
                     <a asp-action="AdminEdit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
