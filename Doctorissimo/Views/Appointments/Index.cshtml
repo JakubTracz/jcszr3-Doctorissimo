@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create new appointment</a>
 </p>
-<table class="table">
+<table id ="appointmentsTable" class="table table-striped">
     <thead>
         <tr>
             <th>
@@ -41,21 +41,31 @@
                     @Html.DisplayFor(modelItem => item.AppointmentTime)
                 </td>
                 <td>
-                    @Html.ActionLink(
-                Html.DisplayNameFor(modelItem => item.Room),
+                    @Html.ActionLink(item.Room,
                 "Details",
                 "Rooms",
                 new
                 {
                 id = item.RoomId
                 },null)
-                    @Html.DisplayFor(modelItem => item.Room)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DoctorFullName)
+                    @Html.ActionLink(item.DoctorFullName,
+                        "Details",
+                        "Doctors",
+                        new
+                        {
+                            id = item.DoctorId
+                        },null)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PatientFullName)
+                    @Html.ActionLink(item.PatientFullName,
+                        "Details",
+                        "Patients",
+                        new
+                        {
+                            id = item.PatientId
+                        },null)
                 </td>
                 <td>
                     @Html.ActionLink(
@@ -68,8 +78,7 @@
                 item.DoctorId,
                 item.RoomId
                 },null
-                )
-                    @*<a asp-action="BookAppointment" asp-route-id="@item.Id" asp-route="">Book</a> |*@
+                ) |
                     <a asp-action="AdminEdit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

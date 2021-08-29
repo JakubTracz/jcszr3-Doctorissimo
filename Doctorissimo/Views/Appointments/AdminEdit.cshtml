@@ -20,15 +20,15 @@
                 <span asp-validation-for="Appointment.AppointmentTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SelectedRoomId" class="control-label">Room</label>
-                <select asp-for="SelectedRoomId"
+                <label asp-for="Appointment.RoomId" class="control-label">Room</label>
+                <select asp-for="Appointment.RoomId"
                         asp-items="@(new SelectList(Model.Rooms, "Id", "Name",Model.Room.Name))" class="form-control">
                 </select>
                 <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SelectedDoctorId" class="control-label">Doctor</label>
-                <select asp-for="SelectedDoctorId"
+                <label asp-for="Appointment.DoctorId" class="control-label">Doctor</label>
+                <select asp-for="Appointment.DoctorId"
                         asp-items="@(new SelectList(Model.Doctors, "Id", "FullName",Model.Doctor.FullName))" class="form-control">
                     <option>@Model.Doctor.FullName</option>
                 </select>

@@ -21,6 +21,7 @@ namespace DAL.Models.ViewModels
         public string DoctorFullName { get; set; }
         public int? DoctorId { get; set; }
         public int? RoomId { get; set; }
+        public int? PatientId { get; set; }
         [DisplayName("Patient")]
         public string PatientFullName { get; set; }
         public string Room { get; set; }
