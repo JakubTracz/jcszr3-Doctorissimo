@@ -10,7 +10,9 @@ namespace Doctorissimo.Profiles
         {
             CreateMap<AppointmentDto, Appointment>().ReverseMap();
             CreateMap<DoctorDto, Doctor>().ReverseMap();
-            CreateMap<PatientDto, Patient>().ReverseMap();
+            CreateMap<PatientDto, Patient>().ReverseMap()
+                .ForAllMembers(opts 
+                    => opts.Condition((src,dest,srcMember) => srcMember != null));
             CreateMap<RoomDto, Room>().ReverseMap();
         }
     }

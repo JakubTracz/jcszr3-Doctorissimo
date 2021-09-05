@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -44,7 +45,7 @@ namespace Doctorissimo.Controllers
                     DoctorFullName = a.DoctorDto.FullName,
                     Id = a.Id,
                     RoomName = a.RoomDto.Name,
-                    PatientFullName = a.PatientDto.FullName
+                    PatientFullName = a.PatientDto.FullName?? string.Empty
                 }).ToList();
 
             return View(appointmentsListViewModels);

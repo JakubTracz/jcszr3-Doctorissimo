@@ -18,14 +18,21 @@ namespace DAL.Repositories
         public Task DeleteAppointmentAsync(int id) => DeleteAsync(id);
         public Task UpdateAppointmentAsync(int id, Appointment appointment) => UpdateAsync(id, appointment);
         public bool CheckIfAppointmentExists(int? id) => CheckIfExists(id);
-        public Task<List<Appointment>> GetAllAppointmentsAsync() => GetAll()
+        public Task<List<Appointment>> GetAllAppointmentsAsync() =>
+            GetAll()
+            .Select(a => new Appointment()
+            {
+                Doctor = a.Doctor,
+                DoctorId = a.DoctorId,
+                Id = a.Id,
+                Patient = a.Patient,
+                PatientId = a.PatientId,
+                Room = a.Room,
+                RoomId = a.RoomId,
+                AppointmentStatus = a.AppointmentStatus,
+                AppointmentTime = a.AppointmentTime,
+            })
             .OrderBy(a => a.Id)
             .ToListAsync();
-
-        public async Task<List<Appointment>> TestGet() => await DbContext.Appointments
-            .Select(a => new
-            {
-                
-            }).ToListAsync();
     }
 }
