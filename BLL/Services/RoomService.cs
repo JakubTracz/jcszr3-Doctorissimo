@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BLL.DTO;
 using BLL.IServices;
 using DAL.IRepositories;
@@ -12,25 +12,42 @@ namespace BLL.Services
     public class RoomService:IRoomService
     {
         private readonly IRoomRepository _roomRepository;
+        private readonly IMapper _mapper;
 
-        public RoomService(IRoomRepository roomRepository)
+        public RoomService(IRoomRepository roomRepository, IMapper mapper)
         {
             _roomRepository = roomRepository;
+            _mapper = mapper;
         }
 
-        public Task<List<RoomDTO>> GetAllRoomsAsync()
+        public async Task<List<RoomDto>> GetAllRoomsAsync()
         {
-            return _roomRepository.GetAllRoomsAsync();
+            var rooms = await _roomRepository.GetAllRoomsAsync();
+            return rooms.Select(r => new RoomDto
+            {
+                Id = r.Id,
+                Name = r.Name
+            }).ToList();
         }
 
-        public Task<RoomDTO> GetRoomByIdAsync(int? id)
+        public async Task<RoomDto> GetRoomByIdAsync(int? id)
         {
-            return _roomRepository.GetRoomByIdAsync(id);
+            var room = await _roomRepository.GetRoomByIdAsync(id);
+            return new RoomDto
+            {
+                Id = room.Id,
+                Name = room.Name
+            };
         }
 
-        public Task AddNewRoomAsync(RoomDTO roomDto)
+        public Task AddNewRoomAsync(RoomDto roomDto)
         {
-            return _roomRepository.CreateNewRoomAsync(roomDto);
+            var room = new Room
+            {
+                Name = roomDto.Name,
+                Id = roomDto.Id
+            };
+            return _roomRepository.CreateNewRoomAsync(room);
         }
 
         public Task DeleteRoomAsync(int id)
@@ -38,9 +55,14 @@ namespace BLL.Services
             return _roomRepository.DeleteRoomAsync(id);
         }
 
-        public Task UpdateRoomAsync(int id, RoomDTO roomDto)
+        public Task UpdateRoomAsync(int id, RoomDto roomDto)
         {
-            return _roomRepository.UpdateRoomAsync(id, roomDto);
+            var room = new Room
+            {
+                Name = roomDto.Name,
+                Id = roomDto.Id
+            };
+            return _roomRepository.UpdateRoomAsync(id, room);
         }
 
         public bool CheckIfRoomExists(int? id)
@@ -48,9 +70,21 @@ namespace BLL.Services
             return _roomRepository.CheckIfRoomExists(id);
         }
 
-        public Task<List<AppointmentDTO>> GetAllAppointmentsInSelectedRoom(int? id)
+        public async Task<List<AppointmentDto>> GetAllAppointmentsInSelectedRoom(int? id)
         {
-            return _roomRepository.GetAllAppointmentsInSelectedRoom(id);
+            var rooms =  await _roomRepository.GetAllAppointmentsInSelectedRoom(id);
+            return rooms.Select(a => new AppointmentDto
+            {
+                Id = a.Id,
+                AppointmentStatus = a.AppointmentStatus,
+                AppointmentTime = a.AppointmentTime,
+                DoctorDto = new DoctorDto
+                {
+                    LastName = a.Doctor.LastName,
+                    FirstName = a.Doctor.FirstName,
+                    Specialty = a.Doctor.Specialty
+                }
+            }).ToList();
         }
     }
 }

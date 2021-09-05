@@ -53,7 +53,7 @@ namespace Doctorissimo
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Appointments}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

@@ -1,4 +1,5 @@
-﻿using BLL.IServices;
+﻿using System;
+using BLL.IServices;
 using Microsoft.Extensions.DependencyInjection;
 using DAL.IRepositories;
 using DAL.Repositories;
@@ -18,6 +19,7 @@ namespace BLL.Services
             services.AddTransient<IPatientService, PatientService>();
             services.AddTransient<IDoctorService, DoctorService>();
             services.AddTransient<IRoomService, RoomService>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             return services;
         }
     }

@@ -1,55 +1,82 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BLL.DTO;
 using BLL.IServices;
 using DAL.Enums;
 using DAL.IRepositories;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {
     public class DoctorService : IDoctorService
     {
         private readonly IDoctorRepository _doctorRepository;
+        private readonly IMapper _mapper;
 
-        public DoctorService(IDoctorRepository doctorRepository)
+        public DoctorService(IDoctorRepository doctorRepository, IMapper mapper)
         {
             _doctorRepository = doctorRepository;
+            _mapper = mapper;
         }
 
-        public Task<List<DoctorDTO>> GetAllDoctorsAsync()
+        public async Task<List<DoctorDto>> GetAllDoctorsAsync() => 
+            await _doctorRepository.GetAll().Select(d => new DoctorDto
+            {
+                LastName = d.LastName,
+                Specialty = d.Specialty,
+                FirstName = d.FirstName,
+                Id = d.Id
+            }).ToListAsync();
+
+        public async Task<DoctorDto> GetDoctorByIdAsync(int? id)
         {
-            return _doctorRepository.GetAllDoctorsAsync();
+            var doctor = await _doctorRepository.GetDoctorByIdAsyncTask(id);
+            return new DoctorDto
+            {
+                FirstName = doctor.FirstName,
+                LastName = doctor.LastName,
+                Specialty = doctor.Specialty,
+                Id = doctor.Id
+            };
         }
 
-        public Task<DoctorDTO> GetDoctorByIdAsync(int? id)
+        public Task AddNewDoctorAsync(DoctorDto doctorDto)
         {
-            return _doctorRepository.GetDoctorByIdAsyncTask(id);
+            var doctor = new Doctor
+            {
+                FirstName = doctorDto.FirstName,
+                LastName = doctorDto.LastName,
+                Specialty = doctorDto.Specialty,
+            };
+            return _doctorRepository.CreateNewDoctorAsync(doctor);
         }
 
-        public Task AddNewDoctorAsync(DoctorDTO doctorDto)
+        public Task DeleteDoctorAsync(int id) => _doctorRepository.DeleteDoctorAsync(id);
+        public Task UpdateDoctorAsync(int id, DoctorDto doctorDto)
         {
-            return _doctorRepository.CreateNewDoctorAsync(doctorDto);
+            var doctor = new Doctor
+            {
+                FirstName = doctorDto.FirstName,
+                Id = doctorDto.Id,
+                LastName = doctorDto.LastName,
+                Specialty = doctorDto.Specialty
+            };
+            return _doctorRepository.UpdateDoctorAsync(id, doctor);
         }
-
-        public Task DeleteDoctorAsync(int id)
+        public bool CheckIfDoctorExists(int? id) => _doctorRepository.CheckIfDoctorExists(id);
+        public async Task<List<DoctorDto>> GetDoctorsBySpecialtyAsync(DoctorSpecialty doctorSpecialty)
         {
-            return _doctorRepository.DeleteDoctorAsync(id);
-        }
-
-        public Task UpdateDoctorAsync(int id, DoctorDTO doctorDto)
-        {
-            return _doctorRepository.UpdateDoctorAsync(id, doctorDto);
-        }
-
-        public bool CheckIfDoctorExists(int? id)
-        {
-            return _doctorRepository.CheckIfDoctorExists(id);
-        }
-
-        public Task<List<DoctorDTO>> GetDoctorsBySpecialtyAsync(DoctorSpecialty doctorSpecialty)
-        {
-            return _doctorRepository.GetDoctorsBySpecialtyAsync(doctorSpecialty);
+            var doctors = await _doctorRepository.GetDoctorsBySpecialtyAsync(doctorSpecialty);
+            return doctors.Select(d => new DoctorDto
+            {
+                Specialty = d.Specialty,
+                FirstName = d.FirstName,
+                Id = d.Id,
+                LastName = d.LastName
+            }).ToList();
         }
 
     }

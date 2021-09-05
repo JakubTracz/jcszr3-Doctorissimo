@@ -16,7 +16,7 @@ namespace Doctorissimo.ViewModels
         public DateTime AppointmentTime { get; set; }
         [DisplayName("Doctor")]
         public string DoctorFullName { get; set; }
-        public int? RoomId { get; set; }
+        public int RoomId { get; set; }
         public int? PatientId { get; set; }
         [DisplayName("Patient")]
         public string PatientFullName { get; set; }

@@ -1,10 +1,6 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using DAL.Entities;
-
-namespace BLL.DTO
+﻿namespace BLL.DTO
 {
-    public class MedicationDTO
+    public class MedicationDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

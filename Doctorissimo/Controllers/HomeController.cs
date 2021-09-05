@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using DAL.Enums;
-using DAL.Models;
 using Doctorissimo.ViewModels;
 
 namespace Doctorissimo.Controllers

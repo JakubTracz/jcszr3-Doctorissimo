@@ -1,9 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using BLL.DTO;
 using BLL.IServices;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using DAL.Enums;
 using DAL.Models;
 using Doctorissimo.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Doctorissimo.Controllers
 {
@@ -13,20 +18,37 @@ namespace Doctorissimo.Controllers
         private readonly IPatientService _patientService;
         private readonly IDoctorService _doctorService;
         private readonly IRoomService _roomService;
+        private readonly IMapper _mapper;
 
-        public AppointmentsController(IAppointmentService appointmentService, IPatientService patientService, IDoctorService doctorService, IRoomService roomService)
+        public AppointmentsController(IAppointmentService appointmentService, IPatientService patientService, IDoctorService doctorService, IRoomService roomService, IMapper mapper)
         {
             _appointmentService = appointmentService;
             _patientService = patientService;
             _doctorService = doctorService;
             _roomService = roomService;
+            _mapper = mapper;
         }
 
         //GET: Appointments
         public async Task<IActionResult> Index()
         {
-            return View(await _appointmentService.GetAllAppointments());
-        }
+            var appointmentDtos = await _appointmentService.GetAllAppointmentsAsync();
+            var appointmentsListViewModels = appointmentDtos
+                .Select(a => new AppointmentsListViewModel
+                {
+                    AppointmentStatus = a.AppointmentStatus,
+                    AppointmentTime = a.AppointmentTime,
+                    RoomId = a.RoomDto.Id,
+                    PatientId = a.PatientDto.Id,
+                    DoctorId = a.DoctorDto.Id,
+                    DoctorFullName = a.DoctorDto.FullName,
+                    Id = a.Id,
+                    RoomName = a.RoomDto.Name,
+                    PatientFullName = a.PatientDto.FullName
+                }).ToList();
+
+            return View(appointmentsListViewModels);
+        } 
 
         // GET: Appointments/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -36,21 +58,25 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var appointment = await _appointmentService.GetByIdAsync(id);
-            if (appointment == null)
+            var appointmentDto = await _appointmentService.GetByIdAsync(id);
+            if (appointmentDto == null)
             {
                 return NotFound();
             }
-
-            //return View(appointment);
-            return default;
+            var roomDto = await _roomService.GetRoomByIdAsync(appointmentDto.RoomId);
+            var appointment = _mapper.Map<AppointmentDto,Appointment>(appointmentDto);
+            appointment.Room = _mapper.Map<RoomDto, Room>(roomDto);
+            return View(appointment);
         }
 
         // GET: Appointments/Create
         public async Task<IActionResult> Create()
         {
-            var doctors = await _doctorService.GetAllDoctorsAsync();
-            var rooms = await _roomService.GetAllRoomsAsync();
+            var doctorDtos = await _doctorService.GetAllDoctorsAsync();
+            var roomDtos = await _roomService.GetAllRoomsAsync();
+            var doctors = _mapper.Map<List<DoctorDto>, List<Doctor>>(doctorDtos);
+            var rooms = _mapper.Map<List<RoomDto>, List<Room>>(roomDtos);
+
             var createAppointmentViewModel = new CreateAppointmentViewModel { Doctors = doctors, Rooms = rooms };
             return View(createAppointmentViewModel);
         }
@@ -61,8 +87,17 @@ namespace Doctorissimo.Controllers
         public async Task<IActionResult> Create(CreateAppointmentViewModel createAppointmentViewModel)
         {
             if (!ModelState.IsValid) return View(createAppointmentViewModel);
-            var appointment = _appointmentService.PopulateAppointmentModel(createAppointmentViewModel);
-            await _appointmentService.CreateAsync(appointment);
+            //_appointmentService.PopulateAppointmentModel(createAppointmentViewModel);
+
+            var appointment = createAppointmentViewModel.Appointment;
+            appointment.AppointmentStatus = AppointmentStatus.Available;
+            appointment.DoctorId = createAppointmentViewModel.SelectedDoctorId;
+            appointment.RoomId = createAppointmentViewModel.SelectedRoomId;
+            appointment.PatientId = null;
+
+            var appointmentDto = _mapper.Map<Appointment, AppointmentDto>(appointment);
+
+            await _appointmentService.CreateAsync(appointmentDto);
             return RedirectToAction(nameof(Index));
         }
         // GET: Appointments/Edit/5
@@ -73,34 +108,28 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var appointment = await _appointmentService.GetByIdAsync(id);
-            if (appointment == null)
+            var appointmentDto = await _appointmentService.GetByIdAsync(id); 
+            
+            if (appointmentDto == null)
             {
                 return NotFound();
             }
+            var appointment = _mapper.Map<AppointmentDto,Appointment>(appointmentDto);
             return View(appointment);
         }
 
         // POST: Appointments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DoctorEdit(int id, Appointment appointment)
+        public async Task<IActionResult> DoctorEdit(int id, AppointmentDto appointmentDto)
         {
-            if (id != appointment.Id)
+            if (id != appointmentDto.Id)
             {
                 return NotFound();
             }
-
+            var appointment = _mapper.Map<AppointmentDto,Appointment>(appointmentDto);
             if (!ModelState.IsValid) return View(appointment);
-            try
-            {
-                await _appointmentService.UpdateAsync(id, appointment);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-
-                throw;
-            }
+            await _appointmentService.UpdateAsync(id, appointmentDto);
             return RedirectToAction(nameof(Index));
         }
 
@@ -112,25 +141,34 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var appointment = await _appointmentService.GetByIdAsync(id);
-            if (appointment == null)
+            var appointmentDto = await _appointmentService.GetByIdAsync(id);
+            if (appointmentDto == null)
             {
                 return NotFound();
             }
 
-            var doctors = await _doctorService.GetAllDoctorsAsync();
-            var patients = await _patientService.GetAllPatientsAsync();
-            var rooms = await _roomService.GetAllRoomsAsync();
-            var selectedDoctor = await _doctorService.GetDoctorByIdAsync(appointment.DoctorDto.Id);
-            var selectedRoom = await _roomService.GetRoomByIdAsync(appointment.RoomDto.Id);
-            var selectedPatient = await _patientService.GetPatientByIdAsync(appointment.PatientDto.Id);
-            var adminEditAppointmentViewModel = new AdminEditAppointmentViewModel()
+            var doctorDtos = await _doctorService.GetAllDoctorsAsync();
+            var patientDtos = await _patientService.GetAllPatientsAsync();
+            var roomDtos = await _roomService.GetAllRoomsAsync();
+            var doctorDto = await _doctorService.GetDoctorByIdAsync(appointmentDto.DoctorDto.Id);
+            var roomDto = await _roomService.GetRoomByIdAsync(appointmentDto.RoomDto.Id);
+            var patientDto = await _patientService.GetPatientByIdAsync(appointmentDto.PatientDto.Id);
+
+            var appointment = _mapper.Map<AppointmentDto,Appointment>(appointmentDto);
+            var patients = _mapper.Map<List<PatientDto>, List<Patient>>(patientDtos);
+            var doctors = _mapper.Map<List<DoctorDto>, List<Doctor>>(doctorDtos);
+            var rooms = _mapper.Map<List<RoomDto>, List<Room>>(roomDtos);
+            var selectedDoctor = _mapper.Map<DoctorDto, Doctor>(doctorDto);
+            var selectedPatient = _mapper.Map<PatientDto, Patient>(patientDto);
+            var selectedRoom = _mapper.Map<RoomDto, Room>(roomDto);
+
+            var adminEditAppointmentViewModel = new AdminEditAppointmentViewModel
             {
                 Appointment = appointment,
                 Room = selectedRoom,
-                Doctor = selectedDoctor,
                 Doctors = doctors,
                 Rooms = rooms,
+                Doctor = selectedDoctor,
                 Patient = selectedPatient,
                 Patients = patients
             };
@@ -143,13 +181,14 @@ namespace Doctorissimo.Controllers
         public async Task<IActionResult> AdminEdit(int id, AdminEditAppointmentViewModel adminEditAppointmentViewModel)
         {
             var appointment = adminEditAppointmentViewModel.Appointment;
+            var appointmentDto = _mapper.Map<Appointment, AppointmentDto>(appointment);
             try
             {
-                await _appointmentService.UpdateAsync(id, appointment);
+                await _appointmentService.UpdateAsync(id, appointmentDto);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_appointmentService.CheckIfExists(appointment.Id))
+                if (!_appointmentService.CheckIfExists(appointmentDto.Id))
                 {
                     return NotFound();
                 }
@@ -167,12 +206,12 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            var appointment = await _appointmentService.GetByIdAsync(id);
-            if (appointment == null)
+            var appointmentDto = await _appointmentService.GetByIdAsync(id);
+            if (appointmentDto == null)
             {
                 return NotFound();
             }
-
+            var appointment = _mapper.Map<AppointmentDto, Appointment>(appointmentDto);
             return View(appointment);
         }
 
@@ -188,27 +227,31 @@ namespace Doctorissimo.Controllers
         public async Task<IActionResult> BookAppointment(int id, int doctorId, int roomId)
         {
             {
-                var appointment = await _appointmentService.GetByIdAsync(id);
-                if (appointment == null)
+                var appointmentDto = await _appointmentService.GetByIdAsync(id);
+                if (appointmentDto == null)
                 {
                     return NotFound();
                 }
-                var patients = await _patientService.GetAllPatientsAsync();
-                if (patients == null)
+                var patientDtos = await _patientService.GetAllPatientsAsync();
+                if (patientDtos == null)
                 {
                     return NotFound();
                 }
-                var doctor = await _doctorService.GetDoctorByIdAsync(doctorId);
-                if (doctor == null)
+                var doctorDto = await _doctorService.GetDoctorByIdAsync(doctorId);
+                if (doctorDto == null)
                 {
                     return NotFound();
                 }
-                var room = await _roomService.GetRoomByIdAsync(roomId);
-                if (room == null)
+                var roomDto = await _roomService.GetRoomByIdAsync(roomId);
+                if (roomDto == null)
                 {
                     return NotFound();
                 }
 
+                var appointment = _mapper.Map<AppointmentDto,Appointment>(appointmentDto);
+                var patients = _mapper.Map<List<PatientDto>, List<Patient>>(patientDtos);
+                var doctor = _mapper.Map<DoctorDto, Doctor>(doctorDto);
+                var room = _mapper.Map<RoomDto, Room>(roomDto);
                 BookAppointmentViewModel bookAppointmentViewModel = new()
                 {
                     Appointment = appointment,

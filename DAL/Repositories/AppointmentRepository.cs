@@ -13,12 +13,19 @@ namespace DAL.Repositories
         public AppointmentRepository(DoctorissimoContext dbContext) : base(dbContext)
         {
         }
-
         public Task<Appointment> GetAppointmentByIdAsync(int? id) => GetByIdAsync(id);
         public Task CreateNewAppointmentAsync(Appointment appointment) => CreateAsync(appointment);
         public Task DeleteAppointmentAsync(int id) => DeleteAsync(id);
         public Task UpdateAppointmentAsync(int id, Appointment appointment) => UpdateAsync(id, appointment);
         public bool CheckIfAppointmentExists(int? id) => CheckIfExists(id);
-        public Task<List<Appointment>> GetAllAppointmentsAsync() => GetAll().OrderBy(a => a.Id).ToListAsync();
+        public Task<List<Appointment>> GetAllAppointmentsAsync() => GetAll()
+            .OrderBy(a => a.Id)
+            .ToListAsync();
+
+        public async Task<List<Appointment>> TestGet() => await DbContext.Appointments
+            .Select(a => new
+            {
+                
+            }).ToListAsync();
     }
 }

@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using DAL.Entities;
-
-namespace BLL.DTO
+﻿namespace BLL.DTO
 {
-    public class RoomDTO
+    public class RoomDto
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

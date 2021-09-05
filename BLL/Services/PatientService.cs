@@ -1,34 +1,63 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BLL.DTO;
 using BLL.IServices;
 using DAL.IRepositories;
 using DAL.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {
     public class PatientService :IPatientService
     {
         private readonly IPatientRepository _patientRepository;
-        public PatientService(IPatientRepository patientRepository)
+        private readonly IMapper _mapper;
+        public PatientService(IPatientRepository patientRepository, IMapper mapper)
         {
             _patientRepository = patientRepository;
+            _mapper = mapper;
         }
 
-        public async Task<List<PatientDTO>> GetAllPatientsAsync()
+        public async Task<List<PatientDto>> GetAllPatientsAsync()
         {
-            return await _patientRepository.GetAllPatientsAsync();
+            var patients = await _patientRepository.GetAllPatientsAsync();
+            return patients.Select(p => new PatientDto
+            {
+                FirstName = p.FirstName,
+                Id = p.Id,
+                Address = p.Address,
+                DateOfBirth = p.DateOfBirth,
+                LastName = p.LastName,
+                MailAddress = p.MailAddress
+            }).ToList();
         }
 
-        public async Task<PatientDTO> GetPatientByIdAsync(int? id)
+        public async Task<PatientDto> GetPatientByIdAsync(int? id)
         {
-            return await _patientRepository.GetPatientByIdAsync(id);
+            var patient = await _patientRepository.GetPatientByIdAsync(id);
+            return new PatientDto
+            {
+                Address = patient.Address,
+                DateOfBirth = patient.DateOfBirth,
+                Id = patient.Id,
+                LastName = patient.LastName,
+                MailAddress = patient.MailAddress,
+                FirstName = patient.FirstName
+            };
         }
 
-        public Task AddNewPatientAsync(PatientDTO patientDto)
+        public Task AddNewPatientAsync(PatientDto patientDto)
         {
-            return _patientRepository.CreateNewPatientAsync(patientDto);
+            var patient = new Patient
+            {
+                DateOfBirth = patientDto.DateOfBirth,
+                LastName = patientDto.LastName,
+                MailAddress = patientDto.MailAddress,
+                FirstName = patientDto.FirstName,
+                Address = patientDto.Address,
+            };
+            return _patientRepository.CreateNewPatientAsync(patient);
         }
 
         public Task DeletePatientAsync(int id)
@@ -36,16 +65,20 @@ namespace BLL.Services
             return _patientRepository.DeletePatientAsync(id);
         }
 
-        public Task UpdatePatientAsync(int id, PatientDTO patientDto)
+        public Task UpdatePatientAsync(int id, PatientDto patientDto)
         {
-            return _patientRepository.UpdatePatientAsync(id, patientDto);
+            var patient = new Patient
+            {
+                MailAddress = patientDto.MailAddress,
+                Address = patientDto.Address,
+                DateOfBirth = patientDto.DateOfBirth,
+                FirstName = patientDto.FirstName,
+                LastName = patientDto.LastName,
+                Id = patientDto.Id
+            };
+            return _patientRepository.UpdatePatientAsync(id, patient);
         }
-
-        public bool CheckIfPatientExists(int? id)
-        {
-            return _patientRepository.CheckIfPatientExists(id);
-        }
-
+        public bool CheckIfPatientExists(int? id) => _patientRepository.CheckIfPatientExists(id);
         public Task<bool> CheckIfPatientWIthEmailExists(string mail)
         {
             var patient =  _patientRepository.GetPatientEmailByEmail(mail);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BLL.DTO;
 using BLL.IServices;
 using DAL.Enums;
@@ -14,67 +15,96 @@ namespace BLL.Services
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IPatientRepository _patientRepository;
+        private readonly IDoctorRepository _doctorRepository;
+        private readonly IMapper _mapper;
 
-        public AppointmentService(IAppointmentRepository appointmentRepository, IPatientRepository patientRepository)
+        public AppointmentService(IAppointmentRepository appointmentRepository, IPatientRepository patientRepository, IMapper mapper, IDoctorRepository doctorRepository)
         {
             _appointmentRepository = appointmentRepository;
             _patientRepository = patientRepository;
+            _mapper = mapper;
+            _doctorRepository = doctorRepository;
         }
 
-        public Task<List<AppointmentDTO>> GetAllAsync() =>
-            _appointmentRepository.GetAll().Select(a => new AppointmentDTO
+        public async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
+        {
+            var appointments = await _appointmentRepository.GetAllAppointmentsAsync();
+            var doctors = appointments
             {
-                RoomDto = new RoomDTO { Id = a.RoomId, Name = a.Room.Name },
-                PatientDto = new PatientDTO
-                {
-                    Id = a.Patient.Id,
-                    MailAddress = a.Patient.MailAddress,
-                    DateOfBirth = a.Patient.DateOfBirth,
-                    Address = a.Patient.Address,
-                    LastName = a.Patient.LastName,
-                    FirstName = a.Patient.FirstName,
-                },
-                DoctorDto = new DoctorDTO()
-                {
-                    Id = a.Doctor.Id,
-                    LastName = a.Doctor.LastName,
-                    FirstName = a.Doctor.FirstName,
-                    Specialty = a.Doctor.Specialty,
-                },
+              Id  = a.DoctorId,
+              FirstName = a.Doctor.FirstName,
+
+            }
+            return appointments.Select(a => new AppointmentDto
+            {
+                RoomDto =_mapper.Map<Room,RoomDto>(a.Room),
+                PatientDto = _mapper.Map<Patient,PatientDto>(a.Patient),
+                DoctorDto = _mapper.Map<Doctor,DoctorDto>(a.Doctor),
                 AppointmentStatus = a.AppointmentStatus,
                 AppointmentTime = a.AppointmentTime,
                 Id = a.Id
-            }).ToListAsync();
+            }).ToList();
+        }
 
-        public async Task<AppointmentDTO> GetByIdAsync(int? id)
+        public async Task<AppointmentDto> GetByIdAsync(int? id)
         {
-            var result = await _appointmentRepository.GetAppointmentByIdAsync(id);
-            return new AppointmentDTO()
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(id);
+            var appointmentDto = _mapper.Map<Appointment, AppointmentDto>(appointment);
+            var doctor = await _doctorRepository.GetDoctorByIdAsyncTask(appointment.DoctorId);
+            var patient = await _patientRepository.GetPatientByIdAsync(appointment.PatientId);
+            appointmentDto.DoctorDto = _mapper.Map<Doctor, DoctorDto>(doctor);
+            appointmentDto.PatientDto = _mapper.Map<Patient, PatientDto>(patient);
+
+            return appointmentDto;
+            //    new AppointmentDto
+            //{
+            //    AppointmentStatus = appointment.AppointmentStatus,
+            //    AppointmentTime = appointment.AppointmentTime,
+            //    DoctorDto = doctorDto,
+            //    PatientDto = new PatientDto
+            //    {
+            //        MailAddress = appointment.Patient.MailAddress,
+            //        FirstName = appointment.Patient.FirstName,
+            //        LastName = appointment.Patient.LastName,
+            //        Id = appointment.Patient.Id,
+            //        Address = appointment.Patient.Address,
+            //        DateOfBirth = appointment.Patient.DateOfBirth
+            //    },
+            //    RoomDto = new RoomDto
+            //    {
+            //        Id = appointment.Room.Id,
+            //        Name = appointment.Room.Name
+            //    },
+            //    Id = appointment.Id
+            //};
+        }
+
+     public Task CreateAsync(AppointmentDto appointmentDto)
+        {
+            var appointment = new Appointment
             {
-              
+                AppointmentTime = appointmentDto.AppointmentTime,
+                RoomId = appointmentDto.RoomDto.Id,
+                DoctorId = appointmentDto.DoctorDto.Id
             };
+            return _appointmentRepository.CreateNewAppointmentAsync(appointment);
         }
-
-        public Task CreateAsync(AppointmentDTO appointmentDto)
+        public Task DeleteAsync(int id) => _appointmentRepository.DeleteAppointmentAsync(id);
+        public Task UpdateAsync(int id, AppointmentDto appointmentDto)
         {
-            return _appointmentRepository.CreateNewAppointmentAsync(appointmentDto);
+            var appointment = new Appointment()
+            {
+                RoomId = appointmentDto.RoomDto.Id,
+                AppointmentStatus = appointmentDto.AppointmentStatus,
+                AppointmentTime = appointmentDto.AppointmentTime,
+                DoctorId = appointmentDto.DoctorDto.Id,
+                Id = appointmentDto.Id,
+                PatientId = appointmentDto.PatientDto.Id,
+            };
+            return _appointmentRepository.UpdateAppointmentAsync(id, appointment);
         }
 
-        public Task DeleteAsync(int id)
-        {
-            return _appointmentRepository.DeleteAppointmentAsync(id);
-        }
-
-        public Task UpdateAsync(int id, AppointmentDTO appointmentDto)
-        {
-            return _appointmentRepository.UpdateAppointmentAsync(id, appointmentDto);
-        }
-
-        public bool CheckIfExists(int? id)
-        {
-            return _appointmentRepository.CheckIfAppointmentExists(id);
-        }
-
+        public bool CheckIfExists(int? id) => _appointmentRepository.CheckIfAppointmentExists(id);
         public async Task AssignPatientToAppointment(int id, int patientId)
         {
             var appointment = await _appointmentRepository.GetByIdAsync(id);
@@ -83,40 +113,5 @@ namespace BLL.Services
             appointment.AppointmentStatus = AppointmentStatus.Booked;
             await _appointmentRepository.UpdateAppointmentAsync(id, appointment);
         }
-
-        public AppointmentDTO PopulateAppointmentModel(CreateAppointmentViewModel createAppointmentViewModel)
-        {
-            var appointment = createAppointmentViewModel.Appointment;
-            appointment.AppointmentStatus = AppointmentStatus.Available;
-            appointment.DoctorId = createAppointmentViewModel.SelectedDoctorId;
-            appointment.RoomId = createAppointmentViewModel.SelectedRoomId;
-            appointment.PatientId = null;
-            return appointment;
-        }
-
-        public Task<List<AppointmentDTO>> GetAllAppointments() =>
-            _appointmentRepository.GetAll().Select(a => new AppointmentDTO
-            {
-                RoomDto = new RoomDTO { Id = a.RoomId, Name = a.Room.Name },
-                PatientDto = new PatientDTO
-                {
-                    Id = a.Patient.Id,
-                    MailAddress = a.Patient.MailAddress,
-                    DateOfBirth = a.Patient.DateOfBirth,
-                    Address = a.Patient.Address,
-                    LastName = a.Patient.LastName,
-                    FirstName = a.Patient.FirstName,
-                },
-                DoctorDto = new DoctorDTO()
-                {
-                    Id = a.Doctor.Id,
-                    LastName = a.Doctor.LastName,
-                    FirstName = a.Doctor.FirstName,
-                    Specialty = a.Doctor.Specialty,
-                },
-                AppointmentStatus = a.AppointmentStatus,
-                AppointmentTime = a.AppointmentTime,
-                Id = a.Id
-            }).ToListAsync();
     }
 }

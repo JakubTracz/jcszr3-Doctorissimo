@@ -1,11 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using DAL.Entities;
 
 namespace BLL.DTO
 {
-    public class MedicalTestDTO
+    public class MedicalTestDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
