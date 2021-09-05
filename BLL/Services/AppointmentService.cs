@@ -70,7 +70,7 @@ namespace BLL.Services
 
         public async Task<List<AppointmentsListViewModel>> GetAppointmentsWithDoctorsAsync()
         {
-            return await _appointmentRepository.GetAppointmentsWithDoctorsAsync();
+            return await _appointmentRepository.GetAllAppointments();
         }
     }
 }

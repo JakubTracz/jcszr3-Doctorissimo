@@ -42,7 +42,7 @@ namespace DAL.Repositories
             return CheckIfExists(id);
         }
 
-        public async Task<List<AppointmentsListViewModel>> GetAppointmentsWithDoctorsAsync()
+        public async Task<List<AppointmentsListViewModel>> GetAllAppointments()
         {
             var result = await DbContext.Appointments.Select(a =>
                     new AppointmentsListViewModel
@@ -50,7 +50,7 @@ namespace DAL.Repositories
                         Id = a.Id,
                         AppointmentStatus = a.AppointmentStatus,
                         AppointmentTime = a.AppointmentTime,
-                        Room = a.Room.Name,
+                        RoomName = a.Room.Name,
                         DoctorFullName = a.Doctor.FullName,
                         PatientFullName = a.Patient.FullName ?? string.Empty,
                         DoctorId = a.DoctorId,

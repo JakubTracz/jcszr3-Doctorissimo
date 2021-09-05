@@ -2,6 +2,7 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 function ToggleRowDisplay() {
-    const nextRow = (this).parentNode.row.nextElementSibling();
-    alert(nextRow.innerHTML);
+    const row = $(this).closest("tr");
+    const nextRow = row.next();
+    nextRow.addClass("test");
 }

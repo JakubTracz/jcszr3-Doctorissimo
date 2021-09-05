@@ -83,7 +83,7 @@ namespace Doctorissimo.Controllers
         // POST: Appointments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DoctorEdit(int id, [Bind("Id,AppointmentStatus,Recommendations")] Appointment appointment)
+        public async Task<IActionResult> DoctorEdit(int id,Appointment appointment)
         {
             if (id != appointment.Id)
             {
@@ -97,10 +97,6 @@ namespace Doctorissimo.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_appointmentService.CheckIfExists(appointment.Id))
-                {
-                    return NotFound();
-                }
 
                 throw;
             }
@@ -122,16 +118,20 @@ namespace Doctorissimo.Controllers
             }
 
             var doctors = await _doctorService.GetAllDoctorsAsync();
+            var patients = await _patientService.GetAllPatientsAsync();
             var rooms = await _roomService.GetAllRoomsAsync();
             var selectedDoctor = await _doctorService.GetDoctorByIdAsync(appointment.DoctorId);
             var selectedRoom = await _roomService.GetRoomByIdAsync(appointment.RoomId);
+            var selectedPatient = await _patientService.GetPatientByIdAsync(appointment.PatientId);
             var adminEditAppointmentViewModel = new AdminEditAppointmentViewModel()
             {
                 Appointment = appointment,
                 Room = selectedRoom,
                 Doctor = selectedDoctor,
                 Doctors = doctors,
-                Rooms = rooms
+                Rooms = rooms,
+                Patient = selectedPatient,
+                Patients = patients
             };
             return View(adminEditAppointmentViewModel);
         }
@@ -139,15 +139,9 @@ namespace Doctorissimo.Controllers
         // POST: Appointments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AdminEdit(int id, [Bind("Id,AppointmentStatus,Doctor,Patient,AppointmentTime,Room")] AdminEditAppointmentViewModel adminEditAppointmentViewModel)
+        public async Task<IActionResult> AdminEdit(int id, AdminEditAppointmentViewModel adminEditAppointmentViewModel)
         {
             var appointment = adminEditAppointmentViewModel.Appointment;
-            if (id != appointment.Id)
-            {
-                return NotFound();
-            }
-
-            if (!ModelState.IsValid) return View(adminEditAppointmentViewModel);
             try
             {
                 await _appointmentService.UpdateAsync(id, appointment);
@@ -190,7 +184,7 @@ namespace Doctorissimo.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        public async Task<IActionResult> BookAppointment(int id,int doctorId,int roomId)
+        public async Task<IActionResult> BookAppointment(int id, int doctorId, int roomId)
         {
             {
                 var appointment = await _appointmentService.GetByIdAsync(id);

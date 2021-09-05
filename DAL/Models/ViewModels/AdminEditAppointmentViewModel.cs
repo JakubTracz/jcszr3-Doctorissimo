@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace DAL.Models.ViewModels
 {
-    public class AdminEditAppointmentViewModel
+    public class AdminEditAppointmentViewModel:BaseViewModel
     {
         public List<Doctor> Doctors { get; set; }
-        public int? SelectedDoctorId { get; set; }
-        public Doctor Doctor { get; set; }
+        public List<Patient> Patients { get; set; }
+        public Patient Patient { get; set; }
         public Room Room { get; set; }
         public int? SelectedRoomId { get; set; }
         public Appointment Appointment { get; init; }

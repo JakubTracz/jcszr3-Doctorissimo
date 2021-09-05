@@ -13,6 +13,6 @@ namespace DAL.IRepositories
         public Task DeleteAppointmentAsync(int id);
         public Task UpdateAppointmentAsync(int id, Appointment appointment);
         public bool CheckIfAppointmentExists(int? id);
-        public Task<List<AppointmentsListViewModel>> GetAppointmentsWithDoctorsAsync();
+        public Task<List<AppointmentsListViewModel>> GetAllAppointments();
     }
 }

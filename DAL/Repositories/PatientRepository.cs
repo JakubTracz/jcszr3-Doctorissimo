@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Data;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
-    public class PatientRepository:GenericRepository<Patient>,IPatientRepository
+    public class PatientRepository : GenericRepository<Patient>, IPatientRepository
     {
 
         public PatientRepository(DoctorissimoContext dbContext) : base(dbContext)
@@ -40,14 +41,18 @@ namespace DAL.Repositories
             return CheckIfExists(id);
         }
 
-        public Task<Patient> GetPatientByEmail(string mail)
+        public async Task<bool> GetPatientEmailByEmail(string mail)
         {
-            return Entities.SingleAsync(patient => patient.MailAddress == mail);
+            var result = await Entities.
+                Where(patient => patient.MailAddress.ToUpper() == mail.ToUpper())
+                .Select(patient => patient).ToListAsync();
+            var aaa = result;
+            return await Entities.AnyAsync(patient => patient.MailAddress== mail);
         }
 
         public Task<List<Patient>> GetAllPatientsAsync()
         {
-            return GetAll().OrderBy(p =>p.FirstName).ToListAsync();
+            return GetAll().OrderBy(p => p.FirstName).ToListAsync();
         }
     }
 }

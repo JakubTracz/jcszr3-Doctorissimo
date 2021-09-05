@@ -8,7 +8,7 @@ using DAL.Enums;
 
 namespace DAL.Models.ViewModels
 {
-    public class AppointmentsListViewModel
+    public class AppointmentsListViewModel:BaseViewModel
     {
         public int Id { get; set; }
         [DisplayName("Status")]
@@ -19,11 +19,11 @@ namespace DAL.Models.ViewModels
         public DateTime AppointmentTime { get; set; }
         [DisplayName("Doctor")]
         public string DoctorFullName { get; set; }
-        public int? DoctorId { get; set; }
         public int? RoomId { get; set; }
         public int? PatientId { get; set; }
         [DisplayName("Patient")]
         public string PatientFullName { get; set; }
-        public string Room { get; set; }
+        [DisplayName("Room")]
+        public string RoomName { get; set; }
     }
 }

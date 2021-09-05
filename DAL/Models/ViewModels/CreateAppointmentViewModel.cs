@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Models.ViewModels
 {
-    public class CreateAppointmentViewModel
+    public class CreateAppointmentViewModel:BaseViewModel
     {
         public List<Doctor> Doctors { get; set; }
         public int? SelectedDoctorId { get; set; }

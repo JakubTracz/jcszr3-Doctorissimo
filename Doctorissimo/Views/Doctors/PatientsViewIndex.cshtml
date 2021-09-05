@@ -4,15 +4,6 @@
     ViewData["Title"] = "Index";
 }
 <style type="text/css">.table-row-hidden {display: none }</style>
-<script>
-    function myFunctionLocal() {
-        const x = $1(this).closest("tr");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-</script>
 <h1>Index</h1>
 
 <p>
@@ -35,6 +26,9 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Specialty)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Specialty)

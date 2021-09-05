@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BLL.IServices;
 using DAL.IRepositories;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {
@@ -42,6 +43,12 @@ namespace BLL.Services
         public bool CheckIfPatientExists(int? id)
         {
             return _patientRepository.CheckIfPatientExists(id);
+        }
+
+        public Task<bool> CheckIfPatientWIthEmailExists(string mail)
+        {
+            var patient =  _patientRepository.GetPatientEmailByEmail(mail);
+            return default;
         }
     }
 }

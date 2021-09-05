@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.AppointmentTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Room)
+                @Html.DisplayNameFor(model => model.RoomName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DoctorFullName)
@@ -41,7 +41,7 @@
                     @Html.DisplayFor(modelItem => item.AppointmentTime)
                 </td>
                 <td>
-                    @Html.ActionLink(item.Room,
+                    @Html.ActionLink(item.RoomName,
                 "Details",
                 "Rooms",
                 new
