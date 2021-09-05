@@ -4,14 +4,12 @@ using DAL.Entities;
 
 namespace BLL.DTO
 {
-    public class Medication :IEntity
+    public class MedicationDTO
     {
-        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
-        [DisplayName("Refund percentage")]
         public double RefundPercentage { get; set; }
     }
 }

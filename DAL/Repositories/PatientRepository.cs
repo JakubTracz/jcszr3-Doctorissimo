@@ -16,43 +16,20 @@ namespace DAL.Repositories
         {
         }
 
-        public Task<Patient> GetPatientByIdAsync(int? id)
+        public Task<Patient> GetPatientByIdAsync(int? id) => GetByIdAsync(id);
+        public Task CreateNewPatientAsync(Patient patient) => CreateAsync(patient);
+        public Task DeletePatientAsync(int id) => DeleteAsync(id);
+        public Task UpdatePatientAsync(int id, Patient patient) => UpdateAsync(id, patient);
+        public bool CheckIfPatientExists(int? id) => CheckIfExists(id);
+        public  Task<bool> GetPatientEmailByEmail(string mail)
         {
-            return GetByIdAsync(id);
-        }
-
-        public Task CreateNewPatientAsync(Patient patient)
-        {
-            return CreateAsync(patient);
-        }
-
-        public Task DeletePatientAsync(int id)
-        {
-            return DeleteAsync(id);
-        }
-
-        public Task UpdatePatientAsync(int id, Patient patient)
-        {
-            return UpdateAsync(id, patient);
-        }
-
-        public bool CheckIfPatientExists(int? id)
-        {
-            return CheckIfExists(id);
-        }
-
-        public async Task<bool> GetPatientEmailByEmail(string mail)
-        {
-            var result = await Entities.
+            var result = Entities.
                 Where(patient => patient.MailAddress.ToUpper() == mail.ToUpper())
                 .Select(patient => patient).ToListAsync();
             var aaa = result;
-            return await Entities.AnyAsync(patient => patient.MailAddress== mail);
+            return Entities.AnyAsync(patient => patient.MailAddress== mail);
         }
 
-        public Task<List<Patient>> GetAllPatientsAsync()
-        {
-            return GetAll().OrderBy(p => p.FirstName).ToListAsync();
-        }
+        public Task<List<Patient>> GetAllPatientsAsync() => GetAll().OrderBy(p => p.FirstName).ToListAsync();
     }
 }

@@ -21,14 +21,38 @@ namespace BLL.Services
             _patientRepository = patientRepository;
         }
 
-        public async Task<List<AppointmentDTO>> GetAllAsync()
-        {
-            return await _appointmentRepository.GetAllAppointmentsAsync();
-        }
+        public Task<List<AppointmentDTO>> GetAllAsync() =>
+            _appointmentRepository.GetAll().Select(a => new AppointmentDTO
+            {
+                RoomDto = new RoomDTO { Id = a.RoomId, Name = a.Room.Name },
+                PatientDto = new PatientDTO
+                {
+                    Id = a.Patient.Id,
+                    MailAddress = a.Patient.MailAddress,
+                    DateOfBirth = a.Patient.DateOfBirth,
+                    Address = a.Patient.Address,
+                    LastName = a.Patient.LastName,
+                    FirstName = a.Patient.FirstName,
+                },
+                DoctorDto = new DoctorDTO()
+                {
+                    Id = a.Doctor.Id,
+                    LastName = a.Doctor.LastName,
+                    FirstName = a.Doctor.FirstName,
+                    Specialty = a.Doctor.Specialty,
+                },
+                AppointmentStatus = a.AppointmentStatus,
+                AppointmentTime = a.AppointmentTime,
+                Id = a.Id
+            }).ToListAsync();
 
         public async Task<AppointmentDTO> GetByIdAsync(int? id)
         {
-            return await _appointmentRepository.GetAppointmentByIdAsync(id);
+            var result = await _appointmentRepository.GetAppointmentByIdAsync(id);
+            return new AppointmentDTO()
+            {
+              
+            };
         }
 
         public Task CreateAsync(AppointmentDTO appointmentDto)

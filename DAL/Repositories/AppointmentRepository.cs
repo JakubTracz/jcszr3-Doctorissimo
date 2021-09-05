@@ -14,48 +14,11 @@ namespace DAL.Repositories
         {
         }
 
-        public Task<Appointment> GetAppointmentByIdAsync(int? id)
-        {
-            return GetByIdAsync(id);
-        }
-
-        public Task CreateNewAppointmentAsync(Appointment appointment)
-        {
-            return CreateAsync(appointment);
-        }
-
-        public Task DeleteAppointmentAsync(int id)
-        {
-            return DeleteAsync(id);
-        }
-
-        public Task UpdateAppointmentAsync(int id, Appointment appointment)
-        {
-            return UpdateAsync(id, appointment);
-        }
-
-        public bool CheckIfAppointmentExists(int? id)
-        {
-            return CheckIfExists(id);
-        }
-
-        public Task<List<Appointment>> GetAllAppointments()=> DbContext.Appointments
-                .OrderBy(a => a.Id)
-                .ToListAsync();
-        //public AppointmentsListViewModel GetRoomAndDoctor(int id)
-        //{
-        //    var result = DbContext.Appointments
-        //        .Where(a => a.Id == id)
-        //        .Select(a => new AppointmentsListViewModel
-        //        {
-        //            Room = a.Room.Name,
-        //            DoctorFullName = a.Doctor.FullName,
-        //        });
-        //    return result;
-        //}
-        public Task<List<Appointment>> GetAllAppointmentsAsync()
-        {
-            return GetAll().OrderBy(a => a.Id).ToListAsync();
-        }
+        public Task<Appointment> GetAppointmentByIdAsync(int? id) => GetByIdAsync(id);
+        public Task CreateNewAppointmentAsync(Appointment appointment) => CreateAsync(appointment);
+        public Task DeleteAppointmentAsync(int id) => DeleteAsync(id);
+        public Task UpdateAppointmentAsync(int id, Appointment appointment) => UpdateAsync(id, appointment);
+        public bool CheckIfAppointmentExists(int? id) => CheckIfExists(id);
+        public Task<List<Appointment>> GetAllAppointmentsAsync() => GetAll().OrderBy(a => a.Id).ToListAsync();
     }
 }

@@ -11,22 +11,13 @@ namespace DAL.Repositories
     {
         protected readonly DoctorissimoContext DbContext;
         protected readonly DbSet<TEntity> Entities;
-
         protected GenericRepository(DoctorissimoContext dbContext)
         {
             DbContext = dbContext;
             Entities = DbContext.Set<TEntity>();
         }
-        public IQueryable<TEntity> GetAll()
-        {
-            return Entities.AsNoTracking();
-        }
-
-        public async Task<TEntity> GetByIdAsync(int? id)
-        {
-            return await Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
-        }
-
+        public IQueryable<TEntity> GetAll() => Entities.AsNoTracking();
+        public async Task<TEntity> GetByIdAsync(int? id) => await Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
         public async Task CreateAsync(TEntity entity)
         {
             await Entities.AddAsync(entity);
@@ -45,9 +36,6 @@ namespace DAL.Repositories
             Entities.Remove(entity);
             await DbContext.SaveChangesAsync();
         }
-        public bool CheckIfExists(int? id)
-        {
-            return  Entities.Any(e => e.Id == id);
-        }
+        public bool CheckIfExists(int? id) => Entities.Any(e => e.Id == id);
     }
 }

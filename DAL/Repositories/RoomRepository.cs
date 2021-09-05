@@ -15,42 +15,16 @@ namespace DAL.Repositories
         {
         }
 
-        public Task<List<Room>> GetAllRoomsAsync()
-        {
-            return GetAll().OrderBy(d =>d.Name).ToListAsync(); 
-        }
-
-        public Task<Room> GetRoomByIdAsync(int? id)
-        {
-            return GetByIdAsync(id);
-        }
-
-        public Task CreateNewRoomAsync(Room room)
-        {
-            return CreateAsync(room);
-        }
-
-        public Task DeleteRoomAsync(int id)
-        {
-            return DeleteAsync(id);
-        }
-
-        public Task UpdateRoomAsync(int id, Room room)
-        {
-            return UpdateAsync(id, room);
-        }
-
-        public bool CheckIfRoomExists(int? id)
-        {
-            return CheckIfExists(id);
-        }
-
-        public async Task<List<Appointment>> GetAllAppointmentsInSelectedRoom(int? id)
-        {
-            return await DbContext.Appointments.Select(a => a)
+        public Task<List<Room>> GetAllRoomsAsync() => GetAll().OrderBy(d =>d.Name).ToListAsync();
+        public Task<Room> GetRoomByIdAsync(int? id) => GetByIdAsync(id);
+        public Task CreateNewRoomAsync(Room room) => CreateAsync(room);
+        public Task DeleteRoomAsync(int id) => DeleteAsync(id);
+        public Task UpdateRoomAsync(int id, Room room) => UpdateAsync(id, room);
+        public bool CheckIfRoomExists(int? id) => CheckIfExists(id);
+        public async Task<List<Appointment>> GetAllAppointmentsInSelectedRoom(int? id) =>
+            await DbContext.Appointments.Select(a => a)
                 .Where(r => r.RoomId == id)
                 .OrderBy(a => a.AppointmentTime)
                 .ToListAsync();
-        }
     }
 }
