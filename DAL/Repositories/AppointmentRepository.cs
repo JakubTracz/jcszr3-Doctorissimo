@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Data;
 using DAL.IRepositories;
 using DAL.Models;
-using DAL.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace DAL.Repositories
 {
@@ -42,26 +39,9 @@ namespace DAL.Repositories
             return CheckIfExists(id);
         }
 
-        public async Task<List<AppointmentsListViewModel>> GetAllAppointments()
-        {
-            var result = await DbContext.Appointments.Select(a =>
-                    new AppointmentsListViewModel
-                    {
-                        Id = a.Id,
-                        AppointmentStatus = a.AppointmentStatus,
-                        AppointmentTime = a.AppointmentTime,
-                        RoomName = a.Room.Name,
-                        DoctorFullName = a.Doctor.FullName,
-                        PatientFullName = a.Patient.FullName ?? string.Empty,
-                        DoctorId = a.DoctorId,
-                        RoomId = a.RoomId,
-                        PatientId = a.PatientId
-
-                    })
+        public Task<List<Appointment>> GetAllAppointments()=> DbContext.Appointments
                 .OrderBy(a => a.Id)
                 .ToListAsync();
-            return result;
-        }
         //public AppointmentsListViewModel GetRoomAndDoctor(int id)
         //{
         //    var result = DbContext.Appointments

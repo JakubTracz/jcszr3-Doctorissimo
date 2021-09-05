@@ -3,7 +3,7 @@ using BLL.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DAL.Models;
-using DAL.Models.ViewModels;
+using Doctorissimo.ViewModels;
 
 namespace Doctorissimo.Controllers
 {
@@ -22,10 +22,10 @@ namespace Doctorissimo.Controllers
             _roomService = roomService;
         }
 
-        // GET: Appointments
+        //GET: Appointments
         public async Task<IActionResult> Index()
         {
-            return View(await _appointmentService.GetAppointmentsWithDoctorsAsync());
+            return View(await _appointmentService.GetAllAppointments());
         }
 
         // GET: Appointments/Details/5
@@ -42,7 +42,8 @@ namespace Doctorissimo.Controllers
                 return NotFound();
             }
 
-            return View(appointment);
+            //return View(appointment);
+            return default;
         }
 
         // GET: Appointments/Create
@@ -83,7 +84,7 @@ namespace Doctorissimo.Controllers
         // POST: Appointments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DoctorEdit(int id,Appointment appointment)
+        public async Task<IActionResult> DoctorEdit(int id, Appointment appointment)
         {
             if (id != appointment.Id)
             {
@@ -120,9 +121,9 @@ namespace Doctorissimo.Controllers
             var doctors = await _doctorService.GetAllDoctorsAsync();
             var patients = await _patientService.GetAllPatientsAsync();
             var rooms = await _roomService.GetAllRoomsAsync();
-            var selectedDoctor = await _doctorService.GetDoctorByIdAsync(appointment.DoctorId);
-            var selectedRoom = await _roomService.GetRoomByIdAsync(appointment.RoomId);
-            var selectedPatient = await _patientService.GetPatientByIdAsync(appointment.PatientId);
+            var selectedDoctor = await _doctorService.GetDoctorByIdAsync(appointment.DoctorDto.Id);
+            var selectedRoom = await _roomService.GetRoomByIdAsync(appointment.RoomDto.Id);
+            var selectedPatient = await _patientService.GetPatientByIdAsync(appointment.PatientDto.Id);
             var adminEditAppointmentViewModel = new AdminEditAppointmentViewModel()
             {
                 Appointment = appointment,

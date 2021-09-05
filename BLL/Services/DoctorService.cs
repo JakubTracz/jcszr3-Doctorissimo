@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using BLL.DTO;
 using BLL.IServices;
 using DAL.Enums;
 using DAL.IRepositories;
@@ -16,19 +17,19 @@ namespace BLL.Services
             _doctorRepository = doctorRepository;
         }
 
-        public Task<List<Doctor>> GetAllDoctorsAsync()
+        public Task<List<DoctorDTO>> GetAllDoctorsAsync()
         {
             return _doctorRepository.GetAllDoctorsAsync();
         }
 
-        public Task<Doctor> GetDoctorByIdAsync(int? id)
+        public Task<DoctorDTO> GetDoctorByIdAsync(int? id)
         {
             return _doctorRepository.GetDoctorByIdAsyncTask(id);
         }
 
-        public Task AddNewDoctorAsync(Doctor doctor)
+        public Task AddNewDoctorAsync(DoctorDTO doctorDto)
         {
-            return _doctorRepository.CreateNewDoctorAsync(doctor);
+            return _doctorRepository.CreateNewDoctorAsync(doctorDto);
         }
 
         public Task DeleteDoctorAsync(int id)
@@ -36,9 +37,9 @@ namespace BLL.Services
             return _doctorRepository.DeleteDoctorAsync(id);
         }
 
-        public Task UpdateDoctorAsync(int id, Doctor doctor)
+        public Task UpdateDoctorAsync(int id, DoctorDTO doctorDto)
         {
-            return _doctorRepository.UpdateDoctorAsync(id, doctor);
+            return _doctorRepository.UpdateDoctorAsync(id, doctorDto);
         }
 
         public bool CheckIfDoctorExists(int? id)
@@ -46,7 +47,7 @@ namespace BLL.Services
             return _doctorRepository.CheckIfDoctorExists(id);
         }
 
-        public Task<List<Doctor>> GetDoctorsBySpecialtyAsync(DoctorSpecialty doctorSpecialty)
+        public Task<List<DoctorDTO>> GetDoctorsBySpecialtyAsync(DoctorSpecialty doctorSpecialty)
         {
             return _doctorRepository.GetDoctorsBySpecialtyAsync(doctorSpecialty);
         }

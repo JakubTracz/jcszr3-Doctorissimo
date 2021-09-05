@@ -1,4 +1,4 @@
-namespace DAL.Models
+namespace Doctorissimo.ViewModels
 {
     public class ErrorViewModel
     {

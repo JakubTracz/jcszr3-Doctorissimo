@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using DAL.Models;
-using DAL.Models.ViewModels;
 
 namespace DAL.IRepositories
 {
@@ -13,6 +12,6 @@ namespace DAL.IRepositories
         public Task DeleteAppointmentAsync(int id);
         public Task UpdateAppointmentAsync(int id, Appointment appointment);
         public bool CheckIfAppointmentExists(int? id);
-        public Task<List<AppointmentsListViewModel>> GetAllAppointments();
+        public Task<List<Appointment>> GetAllAppointments();
     }
 }

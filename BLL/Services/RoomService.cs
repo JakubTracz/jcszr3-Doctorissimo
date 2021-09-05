@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BLL.DTO;
 using BLL.IServices;
 using DAL.IRepositories;
 using DAL.Models;
@@ -17,19 +18,19 @@ namespace BLL.Services
             _roomRepository = roomRepository;
         }
 
-        public Task<List<Room>> GetAllRoomsAsync()
+        public Task<List<RoomDTO>> GetAllRoomsAsync()
         {
             return _roomRepository.GetAllRoomsAsync();
         }
 
-        public Task<Room> GetRoomByIdAsync(int? id)
+        public Task<RoomDTO> GetRoomByIdAsync(int? id)
         {
             return _roomRepository.GetRoomByIdAsync(id);
         }
 
-        public Task AddNewRoomAsync(Room room)
+        public Task AddNewRoomAsync(RoomDTO roomDto)
         {
-            return _roomRepository.CreateNewRoomAsync(room);
+            return _roomRepository.CreateNewRoomAsync(roomDto);
         }
 
         public Task DeleteRoomAsync(int id)
@@ -37,9 +38,9 @@ namespace BLL.Services
             return _roomRepository.DeleteRoomAsync(id);
         }
 
-        public Task UpdateRoomAsync(int id, Room room)
+        public Task UpdateRoomAsync(int id, RoomDTO roomDto)
         {
-            return _roomRepository.UpdateRoomAsync(id, room);
+            return _roomRepository.UpdateRoomAsync(id, roomDto);
         }
 
         public bool CheckIfRoomExists(int? id)
@@ -47,7 +48,7 @@ namespace BLL.Services
             return _roomRepository.CheckIfRoomExists(id);
         }
 
-        public Task<List<Appointment>> GetAllAppointmentsInSelectedRoom(int? id)
+        public Task<List<AppointmentDTO>> GetAllAppointmentsInSelectedRoom(int? id)
         {
             return _roomRepository.GetAllAppointmentsInSelectedRoom(id);
         }

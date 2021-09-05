@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using BLL.DTO;
 using BLL.IServices;
 using DAL.Enums;
 using DAL.IRepositories;
 using DAL.Models;
-using DAL.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {
@@ -19,19 +21,19 @@ namespace BLL.Services
             _patientRepository = patientRepository;
         }
 
-        public async Task<List<Appointment>> GetAllAsync()
+        public async Task<List<AppointmentDTO>> GetAllAsync()
         {
             return await _appointmentRepository.GetAllAppointmentsAsync();
         }
 
-        public async Task<Appointment> GetByIdAsync(int? id)
+        public async Task<AppointmentDTO> GetByIdAsync(int? id)
         {
             return await _appointmentRepository.GetAppointmentByIdAsync(id);
         }
 
-        public Task CreateAsync(Appointment appointment)
+        public Task CreateAsync(AppointmentDTO appointmentDto)
         {
-            return _appointmentRepository.CreateNewAppointmentAsync(appointment);
+            return _appointmentRepository.CreateNewAppointmentAsync(appointmentDto);
         }
 
         public Task DeleteAsync(int id)
@@ -39,9 +41,9 @@ namespace BLL.Services
             return _appointmentRepository.DeleteAppointmentAsync(id);
         }
 
-        public Task UpdateAsync(int id, Appointment appointment)
+        public Task UpdateAsync(int id, AppointmentDTO appointmentDto)
         {
-            return _appointmentRepository.UpdateAppointmentAsync(id, appointment);
+            return _appointmentRepository.UpdateAppointmentAsync(id, appointmentDto);
         }
 
         public bool CheckIfExists(int? id)
@@ -58,7 +60,7 @@ namespace BLL.Services
             await _appointmentRepository.UpdateAppointmentAsync(id, appointment);
         }
 
-        public Appointment PopulateAppointmentModel(CreateAppointmentViewModel createAppointmentViewModel)
+        public AppointmentDTO PopulateAppointmentModel(CreateAppointmentViewModel createAppointmentViewModel)
         {
             var appointment = createAppointmentViewModel.Appointment;
             appointment.AppointmentStatus = AppointmentStatus.Available;
@@ -68,9 +70,29 @@ namespace BLL.Services
             return appointment;
         }
 
-        public async Task<List<AppointmentsListViewModel>> GetAppointmentsWithDoctorsAsync()
-        {
-            return await _appointmentRepository.GetAllAppointments();
-        }
+        public Task<List<AppointmentDTO>> GetAllAppointments() =>
+            _appointmentRepository.GetAll().Select(a => new AppointmentDTO
+            {
+                RoomDto = new RoomDTO { Id = a.RoomId, Name = a.Room.Name },
+                PatientDto = new PatientDTO
+                {
+                    Id = a.Patient.Id,
+                    MailAddress = a.Patient.MailAddress,
+                    DateOfBirth = a.Patient.DateOfBirth,
+                    Address = a.Patient.Address,
+                    LastName = a.Patient.LastName,
+                    FirstName = a.Patient.FirstName,
+                },
+                DoctorDto = new DoctorDTO()
+                {
+                    Id = a.Doctor.Id,
+                    LastName = a.Doctor.LastName,
+                    FirstName = a.Doctor.FirstName,
+                    Specialty = a.Doctor.Specialty,
+                },
+                AppointmentStatus = a.AppointmentStatus,
+                AppointmentTime = a.AppointmentTime,
+                Id = a.Id
+            }).ToListAsync();
     }
 }
