@@ -3,7 +3,14 @@
 @{
     ViewData["Title"] = "Index";
 }
-<style type="text/css">.table-row-hidden {display: none }</style>
+<style type="text/css">
+    .table-row-hidden {
+        display: none
+    }
+    .table-row-clickable {
+        cursor: pointer
+    }
+</style>
 <h1>Index</h1>
 
 <p>
@@ -21,9 +28,12 @@
         </tr>
     </thead>
     <tbody>
+        @{
+            var i = 1;
+        }
         @foreach (var item in Model.Doctors)
         {
-            <tr>
+            <tr onclick="ToggleRowDisplay(@i)" class="table-row-clickable">
                 <td>
                     @Html.DisplayFor(modelItem => item.FullName)
                 </td>
@@ -31,19 +41,24 @@
                     @Html.DisplayFor(modelItem => item.Specialty)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Specialty)
-                </td>
-                <td>
-                    <button class="btn btn-info mb-2" onclick="ToggleRowDisplay()" type="button">Info</button>
                     <a asp-action="Details" asp-route-id="@item.Id">Show available appointments</a>
                 </td>
             </tr>
-            <tr class="">
+            var rowName = "DoctorInfoRow" + i;
+            <tr id=@rowName class="table-row-hidden">
                 <td class="border-0">
                     <div>@Html.DisplayFor(modelItem => item.FullName) is a very good doctor</div>
                 </td>
             </tr>
+            i++;
         }
     </tbody>
 </table>
+<script>
+    function ToggleRowDisplay(rowIndex) {
+        const id = `#DoctorInfoRow${rowIndex}`;
+        const nextRow = $(id);      
+        nextRow.toggleClass("table-row-hidden");
+    }
+</script>
 @*table-row-hidden*@
