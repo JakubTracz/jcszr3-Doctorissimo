@@ -12,5 +12,7 @@ namespace BLL.DTO
         public DoctorDto DoctorDto { get; set; }
         public RoomDto RoomDto { get; set; }
         public int RoomId { get; set; }
+        public int DoctorId { get; set; }
+        public int? PatientId { get; set; }
     }
 }

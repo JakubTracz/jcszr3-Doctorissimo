@@ -12,6 +12,6 @@ namespace BLL.IServices
         public Task DeletePatientAsync(int id);
         public Task UpdatePatientAsync(int id, PatientDto patientDto);
         public bool CheckIfPatientExists(int? id);
-        public Task<bool> CheckIfPatientWIthEmailExists(string mail);
+        public Task<bool> PatientWithProvidedEmailExists(string mail);
     }
 }

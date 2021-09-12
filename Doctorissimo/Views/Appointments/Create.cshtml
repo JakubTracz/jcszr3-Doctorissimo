@@ -23,6 +23,7 @@
                         asp-items="@(new SelectList(Model.Rooms, "Id", "Name"))" class="form-control">
                     <option>Please select a room</option>
                 </select>
+                @*@Html.ValidationMessageFor(x =>x.SelectedRoomId)*@
                 <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -31,6 +32,7 @@
                         asp-items="@(new SelectList(Model.Doctors, "Id", "FullName"))" class="form-control">
                     <option>Please select a doctor</option>
                 </select>
+                <span asp-validation-for="SelectedDoctorId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

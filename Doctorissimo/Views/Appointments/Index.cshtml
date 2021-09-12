@@ -1,4 +1,5 @@
-﻿@model List<Doctorissimo.ViewModels.AppointmentsListViewModel>
+﻿@using DAL.Enums
+@model List<Doctorissimo.ViewModels.AppointmentsListViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,19 +14,19 @@
     <thead>
         <tr>
             <th>
-                @*@Html.DisplayNameFor(model => model.)*@
+                @Html.DisplayNameFor(model => model[0].AppointmentStatus)
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.AppointmentTime)*@
+                @Html.DisplayNameFor(model => model[0].AppointmentTime)
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.RoomName)*@
+                @Html.DisplayNameFor(model => model[0].RoomName)
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.DoctorFullName)*@
+                @Html.DisplayNameFor(model => model[0].DoctorFullName)
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.PatientFullName)*@
+                @Html.DisplayNameFor(model => model[0].PatientFullName)
             </th>
             <th>Actions</th>
         </tr>
@@ -68,17 +69,20 @@
                         },null)
                 </td>
                 <td>
-                    @Html.ActionLink(
-                        "Book",
-                        "BookAppointment",
-                        "Appointments",
-                        new
-                        {
-                            item.Id,
-                            item.DoctorId,
-                            item.RoomId
-                        },null
-                        ) |
+                    @if (item.AppointmentStatus == AppointmentStatus.Available)
+                    {
+                        @Html.ActionLink(
+                            "Book",
+                            "BookAppointment",
+                            "Appointments",
+                            new
+                            {
+                                item.Id,
+                                item.DoctorId,
+                                item.RoomId
+                            },null
+                            )<span> | </span>
+                    }
                     <a asp-action="AdminEdit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

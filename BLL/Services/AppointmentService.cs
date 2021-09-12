@@ -7,7 +7,6 @@ using BLL.IServices;
 using DAL.Enums;
 using DAL.IRepositories;
 using DAL.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {
@@ -50,27 +49,6 @@ namespace BLL.Services
             appointmentDto.PatientDto = _mapper.Map<Patient, PatientDto>(patient);
 
             return appointmentDto;
-            //    new AppointmentDto
-            //{
-            //    AppointmentStatus = appointment.AppointmentStatus,
-            //    AppointmentTime = appointment.AppointmentTime,
-            //    DoctorDto = doctorDto,
-            //    PatientDto = new PatientDto
-            //    {
-            //        MailAddress = appointment.Patient.MailAddress,
-            //        FirstName = appointment.Patient.FirstName,
-            //        LastName = appointment.Patient.LastName,
-            //        Id = appointment.Patient.Id,
-            //        Address = appointment.Patient.Address,
-            //        DateOfBirth = appointment.Patient.DateOfBirth
-            //    },
-            //    RoomDto = new RoomDto
-            //    {
-            //        Id = appointment.Room.Id,
-            //        Name = appointment.Room.Name
-            //    },
-            //    Id = appointment.Id
-            //};
         }
 
      public Task CreateAsync(AppointmentDto appointmentDto)
@@ -78,8 +56,10 @@ namespace BLL.Services
             var appointment = new Appointment
             {
                 AppointmentTime = appointmentDto.AppointmentTime,
-                RoomId = appointmentDto.RoomDto.Id,
-                DoctorId = appointmentDto.DoctorDto.Id
+                RoomId = appointmentDto.RoomId,
+                DoctorId = appointmentDto.DoctorId,
+                
+                
             };
             return _appointmentRepository.CreateNewAppointmentAsync(appointment);
         }

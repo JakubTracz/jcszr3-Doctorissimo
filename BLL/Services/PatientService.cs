@@ -79,10 +79,6 @@ namespace BLL.Services
             return _patientRepository.UpdatePatientAsync(id, patient);
         }
         public bool CheckIfPatientExists(int? id) => _patientRepository.CheckIfPatientExists(id);
-        public Task<bool> CheckIfPatientWIthEmailExists(string mail)
-        {
-            var patient =  _patientRepository.GetPatientEmailByEmail(mail);
-            return default;
-        }
+        public Task<bool> PatientWithProvidedEmailExists(string mail) => _patientRepository.CheckIfPatientWithProvidedEmailExists(mail);
     }
 }

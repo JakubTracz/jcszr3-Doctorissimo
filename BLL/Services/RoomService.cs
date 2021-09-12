@@ -72,19 +72,8 @@ namespace BLL.Services
 
         public async Task<List<AppointmentDto>> GetAllAppointmentsInSelectedRoom(int? id)
         {
-            var rooms =  await _roomRepository.GetAllAppointmentsInSelectedRoom(id);
-            return rooms.Select(a => new AppointmentDto
-            {
-                Id = a.Id,
-                AppointmentStatus = a.AppointmentStatus,
-                AppointmentTime = a.AppointmentTime,
-                DoctorDto = new DoctorDto
-                {
-                    LastName = a.Doctor.LastName,
-                    FirstName = a.Doctor.FirstName,
-                    Specialty = a.Doctor.Specialty
-                }
-            }).ToList();
+            var appointmentsInSelectedRoom =  await _roomRepository.GetAllAppointmentsInSelectedRoom(id);
+            return _mapper.Map<List<AppointmentDto>>(appointmentsInSelectedRoom);
         }
     }
 }

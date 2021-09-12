@@ -57,9 +57,16 @@ namespace Doctorissimo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,DateOfBirth,MailAddress,Address,Appointments,Prescriptions")] Patient patient)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,DateOfBirth,MailAddress,Address")] Patient patient)
         {
             if (!ModelState.IsValid) return View(patient);
+            var newPatientMail = patient.MailAddress;
+            if (await _patientService.PatientWithProvidedEmailExists(newPatientMail))
+            {
+                ViewBag.ErrorMessage = "A user with the provided e-mail address already exists in the database.\n " +
+                                       "Please try again or contact the administration.";
+                return View();
+            }
             var patientDto = _mapper.Map<Patient, PatientDto>(patient);
             await _patientService.AddNewPatientAsync(patientDto);
             return RedirectToAction(nameof(Index));

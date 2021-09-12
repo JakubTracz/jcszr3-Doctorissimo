@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using DAL.Entities;
 using DAL.Enums;
+using DAL.Validation;
 
 namespace DAL.Models
 {
@@ -21,6 +22,7 @@ namespace DAL.Models
 
         [DisplayName("Appointment time")]
         [DataType(DataType.DateTime)]
+        [CheckDateInFuture(ErrorMessage = "Appointment date and time must be in the future.")]
         public DateTime AppointmentTime { get; set; }
         public int? PatientId { get; set; }
         public int DoctorId { get; set; }

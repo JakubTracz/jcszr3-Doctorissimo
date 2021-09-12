@@ -20,15 +20,7 @@ namespace DAL.Repositories
         public Task DeletePatientAsync(int id) => DeleteAsync(id);
         public Task UpdatePatientAsync(int id, Patient patient) => UpdateAsync(id, patient);
         public bool CheckIfPatientExists(int? id) => CheckIfExists(id);
-        public  Task<bool> GetPatientEmailByEmail(string mail)
-        {
-            var result = Entities.
-                Where(patient => patient.MailAddress.ToUpper() == mail.ToUpper())
-                .Select(patient => patient).ToListAsync();
-            var aaa = result;
-            return Entities.AnyAsync(patient => patient.MailAddress== mail);
-        }
-
+        public  Task<bool> CheckIfPatientWithProvidedEmailExists(string mail) => Entities.AnyAsync(patient => patient.MailAddress.ToUpper()== mail.ToUpper());
         public Task<List<Patient>> GetAllPatientsAsync() => GetAll().OrderBy(p => p.FirstName).ToListAsync();
     }
 }

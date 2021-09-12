@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DAL.Entities;
+using DAL.Validation;
 
 namespace DAL.Models
 {
@@ -12,22 +13,21 @@ namespace DAL.Models
         [Key]
         public int Id { get; set; }
         [DisplayName("First name")]
-        [Required]
+        [Required(ErrorMessage = "First name is required.")]
         public string FirstName { get; set; }
         [DisplayName("Last name")]
-        [Required]
+        [Required(ErrorMessage = "Last name is required.")]
         public string LastName { get; set; }
         [DisplayName("Date of birth")]
-        //[Range(typeof(DateTime),"1/1/1000","8/12/2021",ErrorMessage = "Date is out of range")] 
+        [CheckDateInPast(ErrorMessage = "Date of birth cannot be later than today.")]
         [DataType(DataType.Date)]
-        [Required]
+        [Required(ErrorMessage = "Date of birth is required.")]
         public DateTime DateOfBirth { get; set; }
         [DisplayName("Mail address")]
-        [RegularExpression(@"^[_a-z0-9-]+(.[a-z0-9-]+)@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$")]
-        [DataType(DataType.EmailAddress)]
-        [Required]
+        [RegularExpression(@"^[_a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)@[A-Za-z0-9-]+(.[A-Za-z0-9-]+)*(.[A-Za-z]{2,4})$",ErrorMessage = "E-mail format is invalid.")]
+        [Required(ErrorMessage = "E-mail address is required.")]
         public string MailAddress { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Address is required.")]
         public string Address { get; set; }
         public List<Appointment> Appointments { get; set; }
         public List<Prescription> Prescriptions { get; set; }
