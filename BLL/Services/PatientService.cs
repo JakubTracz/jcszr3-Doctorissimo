@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using BLL.IServices;
 using DAL.IRepositories;
 using DAL.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {

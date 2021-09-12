@@ -91,15 +91,7 @@ namespace Doctorissimo.Controllers
             }
 
             if (!ModelState.IsValid) return View(appointment);
-            try
-            {
-                await _appointmentService.UpdateAsync(id, appointment);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-
-                throw;
-            }
+            await _appointmentService.UpdateAsync(id, appointment);
             return RedirectToAction(nameof(Index));
         }
 

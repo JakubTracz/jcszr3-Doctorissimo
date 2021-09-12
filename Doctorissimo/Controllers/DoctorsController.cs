@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using BLL.IServices;
-using DAL.Enums;
 using DAL.Models;
 using DAL.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;

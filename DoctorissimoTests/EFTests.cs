@@ -1,7 +1,4 @@
-using System;
-using System.Threading.Tasks;
 using DAL.Data;
-using DAL.Models;
 using DAL.Repositories;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;

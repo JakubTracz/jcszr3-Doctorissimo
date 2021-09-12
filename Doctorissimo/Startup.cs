@@ -25,7 +25,7 @@ namespace Doctorissimo
             services.AddDbContext<DoctorissimoContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DoctorissimoContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddServicesCollection();
         }
 

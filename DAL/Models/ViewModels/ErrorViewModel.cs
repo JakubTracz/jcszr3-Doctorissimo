@@ -1,4 +1,4 @@
-namespace DAL.Models
+namespace DAL.Models.ViewModels
 {
     public class ErrorViewModel
     {

@@ -3,19 +3,9 @@
 @{
     ViewData["Title"] = "Index";
 }
-<style type="text/css">
-    .table-row-hidden {
-        display: none
-    }
-    .table-row-clickable {
-        cursor: pointer
-    }
-</style>
-<h1>Index</h1>
+<h1>All doctors</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -61,4 +51,3 @@
         nextRow.toggleClass("table-row-hidden");
     }
 </script>
-@*table-row-hidden*@
