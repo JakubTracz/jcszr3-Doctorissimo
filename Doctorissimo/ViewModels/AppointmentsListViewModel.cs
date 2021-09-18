@@ -5,7 +5,7 @@ using DAL.Enums;
 
 namespace Doctorissimo.ViewModels
 {
-    public class AppointmentsListViewModel:BaseViewModel
+    public class AppointmentsListViewModel
     {
         public int Id { get; set; }
         [DisplayName("Status")]
@@ -22,5 +22,6 @@ namespace Doctorissimo.ViewModels
         public string PatientFullName { get; set; }
         [DisplayName("Room")]
         public string RoomName { get; set; }
+        public int DoctorId { get; set; }
     }
 }

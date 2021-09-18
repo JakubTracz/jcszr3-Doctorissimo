@@ -10,10 +10,6 @@ namespace DAL.Models
 {
     public class Appointment :IEntity
     {
-        public Appointment()
-        {
-            AppointmentStatus = AppointmentStatus.Available;
-        }
 
         [Key]
         public int Id { get; set; }
@@ -25,8 +21,10 @@ namespace DAL.Models
         [CheckDateInFuture(ErrorMessage = "Appointment date and time must be in the future.")]
         public DateTime AppointmentTime { get; set; }
         public int? PatientId { get; set; }
-        public int DoctorId { get; set; }
-        public int RoomId { get; set; }
+        [Required(ErrorMessage = "Please select a Doctor.")]
+        public int? DoctorId { get; set; }
+        [Required(ErrorMessage = "Please select a room.")]
+        public int? RoomId { get; set; }
         public Patient Patient { get; set; }
         public Doctor Doctor { get; set; }
         public Room Room { get; set; }

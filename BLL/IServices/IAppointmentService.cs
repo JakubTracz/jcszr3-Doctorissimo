@@ -13,5 +13,6 @@ namespace BLL.IServices
         public bool CheckIfExists(int? id);
         public Task AssignPatientToAppointment(int id,int patientId);
         public Task<List<AppointmentDto>> GetAllAppointmentsAsync();
+        public bool CheckIfAppointmentIsBooked(int id);
     }
 }

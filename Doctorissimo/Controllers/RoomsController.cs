@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
-using BLL.DTO;
+﻿using System.Threading.Tasks;
 using BLL.IServices;
 using DAL.Models;
 using Doctorissimo.ViewModels;
@@ -13,23 +10,21 @@ namespace Doctorissimo.Controllers
     public class RoomsController : Controller
     {
         private readonly IRoomService _roomService;
-        private readonly IMapper _mapper;
+        private readonly IMappingService _mappingService;
 
-        public RoomsController(IRoomService roomService, IMapper mapper)
+        public RoomsController(IRoomService roomService, IMappingService mappingService)
         {
             _roomService = roomService;
-            _mapper = mapper;
+            _mappingService = mappingService;
         }
 
-        // GET: rooms
         public async Task<IActionResult> Index()
         {
             var roomDtos = await _roomService.GetAllRoomsAsync();
-            var rooms = _mapper.Map<List<RoomDto>, List<Room>>(roomDtos);
+            var rooms = _mappingService.MapRoomDtosToRoomsList(roomDtos);
             return View(rooms);
         }
 
-        // GET: rooms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,9 +37,9 @@ namespace Doctorissimo.Controllers
             {
                 return NotFound();
             }
-            var room = _mapper.Map<RoomDto, Room>(roomDto);
+            var room = _mappingService.MapRoomDtoToRoom(roomDto);
             var appointmentDtos = await _roomService.GetAllAppointmentsInSelectedRoom(id);
-            var appointments = _mapper.Map<List<AppointmentDto>, List<Appointment>>(appointmentDtos);
+            var appointments = _mappingService.MapAppointmentDtosToAppointmentsList(appointmentDtos);
             var roomDetailsViewModel = new RoomDetailsViewModel()
             {
                 Id = room.Id,
@@ -54,26 +49,21 @@ namespace Doctorissimo.Controllers
             return View(roomDetailsViewModel);
         }
 
-        // GET: rooms/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: rooms/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Room room)
         {
             if (!ModelState.IsValid) return View(room);
-            var roomDto = _mapper.Map<Room, RoomDto>(room);
+            var roomDto = _mappingService.MapRoomToRoomDto(room);
             await _roomService.AddNewRoomAsync(roomDto);
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: rooms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,11 +76,10 @@ namespace Doctorissimo.Controllers
             {
                 return NotFound();
             }
-            var room = _mapper.Map<RoomDto, Room>(roomDto);
+            var room = _mappingService.MapRoomDtoToRoom(roomDto);
             return View(room);
         }
 
-        // POST: rooms/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Room room)
@@ -99,7 +88,7 @@ namespace Doctorissimo.Controllers
             {
                 return NotFound();
             }
-            var roomDto = _mapper.Map<Room, RoomDto>(room);
+            var roomDto = _mappingService.MapRoomToRoomDto(room);
             if (!ModelState.IsValid) return View(room);
             try
             {
@@ -117,7 +106,6 @@ namespace Doctorissimo.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: rooms/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,11 +118,10 @@ namespace Doctorissimo.Controllers
             {
                 return NotFound();
             }
-            var room = _mapper.Map<RoomDto, Room>(roomDto);
+            var room = _mappingService.MapRoomDtoToRoom(roomDto);
             return View(room);
         }
 
-        // POST: rooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

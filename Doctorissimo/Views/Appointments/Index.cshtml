@@ -1,5 +1,4 @@
-﻿@using DAL.Enums
-@model List<Doctorissimo.ViewModels.AppointmentsListViewModel>
+﻿@model List<Doctorissimo.ViewModels.AppointmentsListViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -43,12 +42,12 @@
                 </td>
                 <td>
                     @Html.ActionLink(item.RoomName,
-                "Details",
-                "Rooms",
-                new
-                {
-                id = item.RoomId
-                },null)
+                        "Details",
+                        "Rooms",
+                        new
+                        {
+                            id = item.RoomId
+                        }, null)
                 </td>
                 <td>
                     @Html.ActionLink(item.DoctorFullName,
@@ -69,8 +68,8 @@
                         },null)
                 </td>
                 <td>
-                    @if (item.AppointmentStatus == AppointmentStatus.Available)
-                    {
+@*                    @if (item.AppointmentStatus == AppointmentStatus.Available)
+                    {*@
                         @Html.ActionLink(
                             "Book",
                             "BookAppointment",
@@ -82,7 +81,7 @@
                                 item.RoomId
                             },null
                             )<span> | </span>
-                    }
+                    @*}*@
                     <a asp-action="AdminEdit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

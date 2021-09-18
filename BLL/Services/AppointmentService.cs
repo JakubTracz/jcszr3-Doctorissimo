@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BLL.DTO;
@@ -15,28 +14,28 @@ namespace BLL.Services
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IPatientRepository _patientRepository;
         private readonly IDoctorRepository _doctorRepository;
+        private readonly IRoomRepository _roomRepository;
         private readonly IMapper _mapper;
 
-        public AppointmentService(IAppointmentRepository appointmentRepository, IPatientRepository patientRepository, IMapper mapper, IDoctorRepository doctorRepository)
+        public AppointmentService(IAppointmentRepository appointmentRepository, IPatientRepository patientRepository, IMapper mapper, IDoctorRepository doctorRepository, IRoomRepository roomRepository)
         {
             _appointmentRepository = appointmentRepository;
             _patientRepository = patientRepository;
             _mapper = mapper;
             _doctorRepository = doctorRepository;
+            _roomRepository = roomRepository;
         }
 
         public async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
         {
             var appointments = await _appointmentRepository.GetAllAppointmentsAsync();
-            return appointments.Select(a => new AppointmentDto
-            {
-                RoomDto =_mapper.Map<Room,RoomDto>(a.Room),
-                PatientDto = _mapper.Map<Patient,PatientDto>(a.Patient),
-                DoctorDto = _mapper.Map<Doctor,DoctorDto>(a.Doctor),
-                AppointmentStatus = a.AppointmentStatus,
-                AppointmentTime = a.AppointmentTime,
-                Id = a.Id
-            }).ToList();
+            return _mapper.Map<List<Appointment>, List<AppointmentDto>>(appointments);
+        }
+
+        public bool CheckIfAppointmentIsBooked(int id)
+        {
+            var appointmentStatus = _appointmentRepository.GetSelectedAppointmentStatus(id);
+            return appointmentStatus == AppointmentStatus.Booked;
         }
 
         public async Task<AppointmentDto> GetByIdAsync(int? id)
@@ -45,9 +44,10 @@ namespace BLL.Services
             var appointmentDto = _mapper.Map<Appointment, AppointmentDto>(appointment);
             var doctor = await _doctorRepository.GetDoctorByIdAsyncTask(appointment.DoctorId);
             var patient = await _patientRepository.GetPatientByIdAsync(appointment.PatientId);
+            var room = await _roomRepository.GetRoomByIdAsync(appointment.RoomId);
             appointmentDto.DoctorDto = _mapper.Map<Doctor, DoctorDto>(doctor);
             appointmentDto.PatientDto = _mapper.Map<Patient, PatientDto>(patient);
-
+            appointmentDto.RoomDto = _mapper.Map<Room, RoomDto>(room);
             return appointmentDto;
         }
 
@@ -58,8 +58,7 @@ namespace BLL.Services
                 AppointmentTime = appointmentDto.AppointmentTime,
                 RoomId = appointmentDto.RoomId,
                 DoctorId = appointmentDto.DoctorId,
-                
-                
+                AppointmentStatus = AppointmentStatus.Available
             };
             return _appointmentRepository.CreateNewAppointmentAsync(appointment);
         }

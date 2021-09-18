@@ -13,10 +13,6 @@ namespace DAL.Data
             base.OnModelCreating(builder);
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=DoctorissimoContext-8c692097-a331-41dd-a4fa-bd7096770176;Trusted_Connection=True;MultipleActiveResultSets=true"));
-        }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }

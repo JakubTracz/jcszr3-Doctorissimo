@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using AutoMapper;
-using BLL.DTO;
 using BLL.IServices;
 using DAL.Models;
 using Doctorissimo.ViewModels;
@@ -13,25 +10,24 @@ namespace Doctorissimo.Controllers
     public class DoctorsController : Controller
     {
         private readonly IDoctorService _doctorService;
-        private readonly IMapper _mapper;
+        private readonly IMappingService _mappingService;
 
-        public DoctorsController(IDoctorService doctorService, IMapper mapper)
+        public DoctorsController(IDoctorService doctorService,IMappingService mappingService)
         {
             _doctorService = doctorService;
-            _mapper = mapper;
+            _mappingService = mappingService;
         }
 
-        // GET: doctors
         public async Task<IActionResult> Index()
         {
             var doctorDtos = await _doctorService.GetAllDoctorsAsync();
-            var doctors = _mapper.Map<List<DoctorDto>, List<Doctor>>(doctorDtos);
+            var doctors = _mappingService.MapDoctorDtosToDoctorsList(doctorDtos);
             return View(doctors);
         }
         public async Task<IActionResult> PatientsViewIndex(Doctor doctor)
         {
             var doctorDtos = await _doctorService.GetDoctorsBySpecialtyAsync(doctor.Specialty);
-            var doctors = _mapper.Map<List<DoctorDto>, List<Doctor>>(doctorDtos);
+            var doctors = _mappingService.MapDoctorDtosToDoctorsList(doctorDtos);
             var patientSearchDoctorsViewModel = new PatientSearchDoctorsViewModel()
             {
                 DoctorSpecialty = doctor.Specialty,
@@ -40,7 +36,6 @@ namespace Doctorissimo.Controllers
             return View(patientSearchDoctorsViewModel);
         }
 
-        // GET: doctors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,7 +44,7 @@ namespace Doctorissimo.Controllers
             }
 
             var doctorDto = await _doctorService.GetDoctorByIdAsync(id);
-            var doctor = _mapper.Map<DoctorDto, Doctor>(doctorDto);
+            var doctor = _mappingService.MapDoctorDtoToDoctor(doctorDto);
             if (doctorDto == null)
             {
                 return NotFound();
@@ -58,26 +53,21 @@ namespace Doctorissimo.Controllers
             return View(doctor);
         }
 
-        // GET: doctors/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: doctors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Specialty")] Doctor doctor)
         {
             if (!ModelState.IsValid) return View(doctor);
-            var doctorDto = _mapper.Map<Doctor, DoctorDto>(doctor);
+            var doctorDto = _mappingService.MapDoctorToDoctorDto(doctor);
             await _doctorService.AddNewDoctorAsync(doctorDto);
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: doctors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,11 +80,10 @@ namespace Doctorissimo.Controllers
             {
                 return NotFound();
             }
-            var doctor = _mapper.Map<DoctorDto, Doctor>(doctorDto);
+            var doctor = _mappingService.MapDoctorDtoToDoctor(doctorDto);
             return View(doctor);
         }
 
-        // POST: doctors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Specialty")] Doctor doctor)
@@ -107,7 +96,7 @@ namespace Doctorissimo.Controllers
             if (!ModelState.IsValid) return View(doctor);
             try
             {
-                var doctorDto = _mapper.Map<Doctor, DoctorDto>(doctor);
+                var doctorDto = _mappingService.MapDoctorToDoctorDto(doctor);
                 await _doctorService.UpdateDoctorAsync(id, doctorDto);
             }
             catch (DbUpdateConcurrencyException)
@@ -121,8 +110,6 @@ namespace Doctorissimo.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: doctors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,11 +122,10 @@ namespace Doctorissimo.Controllers
             {
                 return NotFound();
             }
-            var doctor = _mapper.Map<DoctorDto, Doctor>(doctorDto);
+            var doctor = _mappingService.MapDoctorDtoToDoctor(doctorDto);
             return View(doctor);
         }
 
-        // POST: doctors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -155,7 +141,7 @@ namespace Doctorissimo.Controllers
         public async Task<IActionResult> PatientSearchDoctorsResult(Doctor doctor)
         {
             var doctorDtos = await _doctorService.GetDoctorsBySpecialtyAsync(doctor.Specialty);
-            var doctors = _mapper.Map<List<DoctorDto>, List<Doctor>>(doctorDtos);
+            var doctors = _mappingService.MapDoctorDtosToDoctorsList(doctorDtos);
             var patientSearchDoctorsViewModel = new PatientSearchDoctorsViewModel()
             {
                 DoctorSpecialty = doctor.Specialty,

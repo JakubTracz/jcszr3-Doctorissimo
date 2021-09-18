@@ -73,7 +73,7 @@ namespace BLL.Services
         public async Task<List<AppointmentDto>> GetAllAppointmentsInSelectedRoom(int? id)
         {
             var appointmentsInSelectedRoom =  await _roomRepository.GetAllAppointmentsInSelectedRoom(id);
-            return _mapper.Map<List<AppointmentDto>>(appointmentsInSelectedRoom);
+            return _mapper.Map<List<Appointment>,List<AppointmentDto>>(appointmentsInSelectedRoom);
         }
     }
 }

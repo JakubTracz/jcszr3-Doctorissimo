@@ -23,7 +23,6 @@
                         asp-items="@(new SelectList(Model.Rooms, "Id", "Name"))" class="form-control">
                     <option>Please select a room</option>
                 </select>
-                @*@Html.ValidationMessageFor(x =>x.SelectedRoomId)*@
                 <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
             </div>
             <div class="form-group">

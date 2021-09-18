@@ -6,7 +6,7 @@ using DAL.Repositories;
 
 namespace BLL.Services
 {
-    public static class DependencyInjection
+    public static class DependencyInjectionService
     {
         public static IServiceCollection AddServicesCollection(this IServiceCollection services)
         {
@@ -20,6 +20,7 @@ namespace BLL.Services
             services.AddTransient<IDoctorService, DoctorService>();
             services.AddTransient<IRoomService, RoomService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddTransient<IMappingService, MappingService>();
             return services;
         }
     }
