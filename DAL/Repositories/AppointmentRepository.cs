@@ -22,7 +22,7 @@ namespace DAL.Repositories
         public bool CheckIfAppointmentExists(int? id) => CheckIfExists(id);
         public AppointmentStatus GetSelectedAppointmentStatus(int id) => GetAppointmentByIdAsync(id).Result.AppointmentStatus;
 
-        public Task<List<Appointment>> GetAllAppointmentsAsync ()  =>
+        public  IQueryable<Appointment> GetAllAppointmentsAsync ()  =>  
             GetAll()
                 .Select(a => new Appointment()
                 {
@@ -35,6 +35,6 @@ namespace DAL.Repositories
                     RoomId = a.RoomId,
                     AppointmentStatus = a.AppointmentStatus,
                     AppointmentTime = a.AppointmentTime,
-                }).ToListAsync();
+                });
     }
 }

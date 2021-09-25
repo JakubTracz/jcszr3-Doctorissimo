@@ -7,6 +7,7 @@ using BLL.IServices;
 using DAL.Enums;
 using Doctorissimo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 
@@ -23,8 +24,7 @@ namespace Doctorissimo.Controllers
             IAppointmentService appointmentService,
             IPatientService patientService,
             IDoctorService doctorService,
-            IRoomService roomService,
-            IMappingService mappingService)
+            IRoomService roomService)
         {
             _appointmentService = appointmentService;
             _patientService = patientService;
@@ -32,43 +32,75 @@ namespace Doctorissimo.Controllers
             _roomService = roomService;
         }
 
-        public async Task<IActionResult> Index(string sortOrder, string currentSort, string currentFilter, string searchString, int? page)
+        public async Task<IActionResult> Index(string sortOrder, string currentPatientFilter, string patientSearchString,
+            string currentDoctorFilter, string doctorSearchString,
+            AppointmentStatus appointmentStatus, int? page)
         {
+            var appointmentDtos = await _appointmentService.GetAllAppointmentsAsync();
+
             ViewBag.currentSort = sortOrder;
             ViewBag.dateSortOrder = sortOrder == "date_desc" ? "date" : "date_desc";
             ViewBag.patientSortOrder = sortOrder == "patient_desc" ? "patient" : "patient_desc";
             ViewBag.doctorSortOrder = sortOrder == "doctor_desc" ? "doctor" : "doctor_desc";
             ViewBag.roomSortOrder = sortOrder == "room_desc" ? "room" : "room_desc";
+            ViewBag.appointmentStatusList = new SelectList(Enum.GetValues(typeof(AppointmentStatus)));
+            ViewBag.appointmentStatus = appointmentStatus;
+
+            if (doctorSearchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                doctorSearchString = currentDoctorFilter;
+            }
+            if (patientSearchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                patientSearchString = currentPatientFilter;
+            }
+
+            ViewBag.CurrentDoctorFilter = doctorSearchString;
+            ViewBag.CurrentPatientFilter = patientSearchString;
+
+            if (!string.IsNullOrEmpty(doctorSearchString) && !string.IsNullOrEmpty(patientSearchString))
+            {
+                var filterAppointmentDtos = appointmentDtos
+                    .Where(a => a.DoctorDto.FullName.Contains(doctorSearchString))
+                    .Where(a => a.PatientDto.FullName.Contains(patientSearchString));
+                appointmentDtos = filterAppointmentDtos.ToList();
+            }
+            else if (!string.IsNullOrEmpty(patientSearchString) && string.IsNullOrEmpty(doctorSearchString))
+            {
+                var filterAppointmentDtos = appointmentDtos
+                    .Where(a => a.PatientDto.FullName.Contains(patientSearchString));
+                appointmentDtos = filterAppointmentDtos.ToList();
+            }
+            else if (!string.IsNullOrEmpty(doctorSearchString) && string.IsNullOrEmpty(patientSearchString))
+            {
+                var filterAppointmentDtos = appointmentDtos
+                    .Where(a => a.DoctorDto.FullName.Contains(doctorSearchString));
+                appointmentDtos = filterAppointmentDtos.ToList();
+            }
 
             var pageNumber = page ?? 1;
             const int pageSize = 10;
-            var appointmentDtos = await _appointmentService.GetAllAppointmentsAsync();
-            switch (sortOrder)
+
+            appointmentDtos = sortOrder switch
             {
-                case "date":
-                    appointmentDtos = await appointmentDtos.OrderBy(a => a.AppointmentTime).ToListAsync();
-                    break;
-                case "date_desc":
-                    appointmentDtos = await appointmentDtos.OrderByDescending(a => a.AppointmentTime).ToListAsync();
-                    break;
-                case "doctor":
-                    appointmentDtos = await appointmentDtos.OrderBy(a => a.DoctorDto.FullName).ToListAsync();
-                    break;
-                case "doctor_desc":
-                    appointmentDtos = await appointmentDtos.OrderByDescending(a => a.DoctorDto.FullName).ToListAsync();
-                    break;
-                case "patient":
-                    appointmentDtos = await appointmentDtos.OrderBy(a => a.PatientDto?.FullName).ToListAsync();
-                    break;
-                case "patient_desc":
-                    appointmentDtos = await appointmentDtos.OrderByDescending(a => a.PatientDto?.FullName).ToListAsync();
-                    break;
-                case "room":
-                    appointmentDtos = await appointmentDtos.OrderBy(a => a.RoomDto.Name).ToListAsync();
-                    break;
-                case "room_desc":
-                    appointmentDtos = await appointmentDtos.OrderByDescending(a => a.RoomDto.Name).ToListAsync();
-                    break;
+                //TODO: CHECKIFASYNC
+                "date" => await appointmentDtos.OrderBy(a => a.AppointmentTime).ToListAsync(),
+                "date_desc" => await appointmentDtos.OrderByDescending(a => a.AppointmentTime).ToListAsync(),
+                "doctor" => await appointmentDtos.OrderBy(a => a.DoctorDto.FullName).ToListAsync(),
+                "doctor_desc" => await appointmentDtos.OrderByDescending(a => a.DoctorDto.FullName).ToListAsync(),
+                "patient" => await appointmentDtos.OrderBy(a => a.PatientDto?.FullName).ToListAsync(),
+                "patient_desc" => await appointmentDtos.OrderByDescending(a => a.PatientDto?.FullName).ToListAsync(),
+                "room" => await appointmentDtos.OrderBy(a => a.RoomDto.Name).ToListAsync(),
+                "room_desc" => await appointmentDtos.OrderByDescending(a => a.RoomDto.Name).ToListAsync(),
+                _ => appointmentDtos
             };
 
             var models = appointmentDtos

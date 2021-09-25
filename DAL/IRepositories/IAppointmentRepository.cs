@@ -8,7 +8,7 @@ namespace DAL.IRepositories
 {
     public interface IAppointmentRepository:IGenericRepository<Appointment>
     {
-        public Task<List<Appointment>> GetAllAppointmentsAsync();
+        public IQueryable<Appointment> GetAllAppointmentsAsync();
         public Task<Appointment> GetAppointmentByIdAsync(int? id);
         public Task CreateNewAppointmentAsync(Appointment appointment);
         public Task DeleteAppointmentAsync(int id);

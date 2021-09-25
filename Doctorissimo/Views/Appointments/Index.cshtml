@@ -11,18 +11,31 @@
 <p>
     <a asp-action="Create">Create new appointment</a>
 </p>
+@using (Html.BeginForm("Index", "Appointments", FormMethod.Get))
+{
+    <p>
+        Filter doctors: @Html.TextBox("DoctorSearchString", ViewBag.DoctorCurrentFilter as string)
+        Filter patients: @Html.TextBox("PatientSearchString", ViewBag.CurrentPatientFilter as string)
+        <input type="submit" value="Search"/>
+    </p>
+}
 <table id="appointmentsTable" class="table table-striped">
     <thead>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model[0].AppointmentStatus)
-        </th>
-        <th>@Html.ActionLink("Appointment time","Index","Appointments",new {sortOrder= ViewBag.dateSortOrder})</th>
-        <th>@Html.ActionLink("Room","Index","Appointments",new {sortOrder = ViewBag.roomSortOrder})</th>
-        <th>@Html.ActionLink("Doctor","Index","Appointments",new {sortOrder = ViewBag.doctorSortOrder})</th>
-        <th>@Html.ActionLink("Patient","Index","Appointments",new {sortOrder = ViewBag.patientSortOrder})</th>
-        <th>Actions</th>
-    </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model[0].AppointmentStatus)
+            </th>
+            <th>@Html.ActionLink("Appointment time","Index","Appointments",new
+                {
+                    sortOrder= ViewBag.dateSortOrder,
+                    currentPatientFilter = ViewBag.CurrentPatientFilter,
+                    currentDoctorFilter = ViewBag.CurrentDoctorFilter
+                })</th>
+            <th>@Html.ActionLink("Room","Index","Appointments",new {sortOrder = ViewBag.roomSortOrder})</th>
+            <th>@Html.ActionLink("Doctor","Index","Appointments",new {sortOrder = ViewBag.doctorSortOrder})</th>
+            <th>@Html.ActionLink("Patient","Index","Appointments",new {sortOrder = ViewBag.patientSortOrder})</th>
+            <th>Actions</th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
@@ -101,4 +114,11 @@
 </table>
 
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)of @Model.PageCount
-@Html.PagedListPager(Model, page => Url.Action("Index", new { page,sortOrder = ViewBag.DateSortOrder }))
+@Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page,
+    sortOrder = ViewBag.dateSortOrder,
+    currentPatientFilter = ViewBag.CurrentPatientFilter,
+    currentDoctorFilter = ViewBag.CurrentDoctorFilter
+
+}))

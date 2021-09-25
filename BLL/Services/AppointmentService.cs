@@ -6,6 +6,7 @@ using BLL.IServices;
 using DAL.Enums;
 using DAL.IRepositories;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {
@@ -30,7 +31,7 @@ namespace BLL.Services
 
         public async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
         {
-            var appointments = await _appointmentRepository.GetAllAppointmentsAsync();
+            var appointments = await _appointmentRepository.GetAllAppointmentsAsync().ToListAsync();
             return _mapper.Map<List<Appointment>, List<AppointmentDto>>(appointments);
         }
 
