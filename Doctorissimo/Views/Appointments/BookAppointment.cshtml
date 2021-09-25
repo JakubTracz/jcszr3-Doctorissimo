@@ -28,16 +28,16 @@
             @Html.DisplayFor(model => model.Appointment.AppointmentTime)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Room)
+            @Html.DisplayNameFor(model => model.Appointment.RoomDto.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Room.Name)
+            @Html.DisplayFor(model => model.Appointment.RoomDto.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Doctor.FullName)
+            @Html.DisplayNameFor(model => model.Appointment.DoctorDto.FullName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Doctor.FullName)
+            @Html.DisplayFor(model => model.Appointment.DoctorDto.FullName)
         </dd>
     </dl>
 </div>

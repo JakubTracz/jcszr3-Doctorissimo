@@ -5,6 +5,7 @@ using DAL.Data;
 using DAL.Enums;
 using DAL.IRepositories;
 using DAL.Models;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
@@ -20,21 +21,20 @@ namespace DAL.Repositories
         public Task UpdateAppointmentAsync(int id, Appointment appointment) => UpdateAsync(id, appointment);
         public bool CheckIfAppointmentExists(int? id) => CheckIfExists(id);
         public AppointmentStatus GetSelectedAppointmentStatus(int id) => GetAppointmentByIdAsync(id).Result.AppointmentStatus;
-        public Task<List<Appointment>> GetAllAppointmentsAsync() =>
+
+        public Task<List<Appointment>> GetAllAppointmentsAsync ()  =>
             GetAll()
-            .Select(a => new Appointment()
-            {
-                Doctor = a.Doctor,
-                DoctorId = a.DoctorId,
-                Id = a.Id,
-                Patient = a.Patient,
-                PatientId = a.PatientId,
-                Room = a.Room,
-                RoomId = a.RoomId,
-                AppointmentStatus = a.AppointmentStatus,
-                AppointmentTime = a.AppointmentTime,
-            })
-            .OrderBy(a => a.Id)
-            .ToListAsync();
+                .Select(a => new Appointment()
+                {
+                    Doctor = a.Doctor,
+                    DoctorId = a.DoctorId,
+                    Id = a.Id,
+                    Patient = a.Patient,
+                    PatientId = a.PatientId,
+                    Room = a.Room,
+                    RoomId = a.RoomId,
+                    AppointmentStatus = a.AppointmentStatus,
+                    AppointmentTime = a.AppointmentTime,
+                }).ToListAsync();
     }
 }

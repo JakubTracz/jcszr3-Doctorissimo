@@ -16,14 +16,16 @@ namespace BLL.Services
         private readonly IDoctorRepository _doctorRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly IMapper _mapper;
+        private readonly IMappingService _mappingService;
 
-        public AppointmentService(IAppointmentRepository appointmentRepository, IPatientRepository patientRepository, IMapper mapper, IDoctorRepository doctorRepository, IRoomRepository roomRepository)
+        public AppointmentService(IAppointmentRepository appointmentRepository, IPatientRepository patientRepository, IMapper mapper, IDoctorRepository doctorRepository, IRoomRepository roomRepository, IMappingService mappingService)
         {
             _appointmentRepository = appointmentRepository;
             _patientRepository = patientRepository;
             _mapper = mapper;
             _doctorRepository = doctorRepository;
             _roomRepository = roomRepository;
+            _mappingService = mappingService;
         }
 
         public async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
@@ -41,13 +43,13 @@ namespace BLL.Services
         public async Task<AppointmentDto> GetByIdAsync(int? id)
         {
             var appointment = await _appointmentRepository.GetAppointmentByIdAsync(id);
-            var appointmentDto = _mapper.Map<Appointment, AppointmentDto>(appointment);
+            var appointmentDto = _mappingService.MapAppointmentToAppointmentDto(appointment);
             var doctor = await _doctorRepository.GetDoctorByIdAsyncTask(appointment.DoctorId);
             var patient = await _patientRepository.GetPatientByIdAsync(appointment.PatientId);
             var room = await _roomRepository.GetRoomByIdAsync(appointment.RoomId);
-            appointmentDto.DoctorDto = _mapper.Map<Doctor, DoctorDto>(doctor);
-            appointmentDto.PatientDto = _mapper.Map<Patient, PatientDto>(patient);
-            appointmentDto.RoomDto = _mapper.Map<Room, RoomDto>(room);
+            appointmentDto.DoctorDto = _mappingService.MapDoctorToDoctorDto(doctor);
+            appointmentDto.PatientDto = _mappingService.MapPatientToPatientDto(patient);
+            appointmentDto.RoomDto = _mappingService.MapRoomToRoomDto(room);
             return appointmentDto;
         }
 

@@ -10,28 +10,18 @@ namespace Doctorissimo.Profiles
         public AppointmentProfile()
         {
             CreateMap<AppointmentDto, Appointment>()
-                .ForMember(d =>d.Doctor,
-                    opt 
-                        => opt.MapFrom(s=>s.DoctorDto))
-                .ForMember(d=>d.Patient,
-                    opt 
-                        =>opt.MapFrom(s =>s.PatientDto))
-                .ForMember(d=>d.Room,
-                    opt 
-                        =>opt.MapFrom(s =>s.RoomDto))
-                .ReverseMap()
-                .ForAllMembers(opts 
-                    => opts.Condition((src,dest,srcMember) => srcMember != null));
-
-
-            CreateMap<AppointmentDto,AppointmentsListViewModel >()
-                .ReverseMap()
-                .ForAllMembers(opts
-                    => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForMember(d => d.Doctor,
+                    opt
+                        => opt.MapFrom(s => s.DoctorDto))
+                .ForMember(d => d.Patient,
+                    opt
+                        => opt.MapFrom(s => s.PatientDto))
+                .ForMember(d => d.Room,
+                    opt
+                        => opt.MapFrom(s => s.RoomDto))
+                .ReverseMap();
             CreateMap<DoctorDto, Doctor>().ReverseMap();
-            CreateMap<PatientDto, Patient>().ReverseMap()
-                .ForAllMembers(opts 
-                    => opts.Condition((src,dest,srcMember) => srcMember != null));
+            CreateMap<PatientDto, Patient>().ReverseMap();
             CreateMap<RoomDto, Room>().ReverseMap();
         }
     }

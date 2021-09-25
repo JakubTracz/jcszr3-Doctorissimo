@@ -3,8 +3,6 @@ using FluentAssertions;
 using DAL.IRepositories;
 using Xunit;
 using AutoMapper;
-using AutoFixture;
-using AutoFixture.AutoMoq;
 
 namespace DoctorissimoTests
 {
@@ -27,6 +25,7 @@ namespace DoctorissimoTests
         [Fact]
         public async void GetPatientByMail()
         {
+            //var patientService = new PatientService();
             var patient = await _patientService.PatientWithProvidedEmailExists("JKuB@MAIL.COM");
             patient.Should().Be(false);
         }

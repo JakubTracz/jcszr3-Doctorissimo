@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using DAL.Enums;
 
 namespace BLL.DTO
@@ -6,6 +7,7 @@ namespace BLL.DTO
     public class AppointmentDto
     {
         public int Id { get; set; }
+        [DisplayName("Appointment status")]
         public AppointmentStatus AppointmentStatus { get; set; }
         public DateTime AppointmentTime { get; set; }
         public PatientDto PatientDto { get; set; }

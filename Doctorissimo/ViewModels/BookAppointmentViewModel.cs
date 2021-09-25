@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using DAL.Models;
+using BLL.DTO;
 
 namespace Doctorissimo.ViewModels
 {
@@ -8,7 +8,7 @@ namespace Doctorissimo.ViewModels
     {
         [DisplayName("Patient name")]
         public int SelectedPatientId { get; set; }
-        public List<Patient> Patients { get; set; }
-        public Appointment Appointment { get; set; }
+        public List<PatientDto> Patients { get; set; }
+        public AppointmentDto Appointment { get; set; }
     }
 }

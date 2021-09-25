@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using DAL.Models;
+using BLL.DTO;
 
 namespace Doctorissimo.ViewModels
 {
-    public class CreateAppointmentViewModel:BaseViewModel
+    public class CreateAppointmentViewModel
     {
-        public List<Doctor> Doctors { get; set; }
+        public List<DoctorDto> Doctors { get; set; }
         [Required(ErrorMessage = "Please select a doctor")]
         public int SelectedDoctorId { get; set; }
         [Required(ErrorMessage = "Please select a room")]
         public int SelectedRoomId { get; set; }
-        public Appointment Appointment { get; init; }
-        public List<Room> Rooms { get; set; }
+        public AppointmentDto Appointment { get; init; }
+        public List<RoomDto> Rooms { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model DAL.Models.Appointment
+﻿@model BLL.DTO.AppointmentDto;
 
 @{
     ViewData["Title"] = "Details";
@@ -17,22 +17,22 @@
             @Html.DisplayFor(model => model.AppointmentTime)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Room)
+            @Html.DisplayNameFor(model => model.RoomDto.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Room.Name)
+            @Html.DisplayFor(model => model.RoomDto.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Doctor.FullName)
+            @Html.DisplayNameFor(model => model.DoctorDto.FullName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Doctor.FullName)
+            @Html.DisplayFor(model => model.DoctorDto.FullName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Patient.FullName)
+            @Html.DisplayNameFor(model => model.PatientDto.FullName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Patient.FullName)
+            @Html.DisplayFor(model => model.PatientDto.FullName)
         </dd>
     </dl>
 </div>

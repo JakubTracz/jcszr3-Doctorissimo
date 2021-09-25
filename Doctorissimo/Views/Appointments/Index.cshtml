@@ -1,4 +1,6 @@
-﻿@model List<Doctorissimo.ViewModels.AppointmentsListViewModel>
+﻿@using DAL.Enums
+@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<Doctorissimo.ViewModels.AppointmentsListViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,26 +11,18 @@
 <p>
     <a asp-action="Create">Create new appointment</a>
 </p>
-<table id ="appointmentsTable" class="table table-striped">
+<table id="appointmentsTable" class="table table-striped">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model[0].AppointmentStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].AppointmentTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].RoomName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].DoctorFullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].PatientFullName)
-            </th>
-            <th>Actions</th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model[0].AppointmentStatus)
+        </th>
+        <th>@Html.ActionLink("Appointment time","Index","Appointments",new {sortOrder= ViewBag.dateSortOrder})</th>
+        <th>@Html.ActionLink("Room","Index","Appointments",new {sortOrder = ViewBag.roomSortOrder})</th>
+        <th>@Html.ActionLink("Doctor","Index","Appointments",new {sortOrder = ViewBag.doctorSortOrder})</th>
+        <th>@Html.ActionLink("Patient","Index","Appointments",new {sortOrder = ViewBag.patientSortOrder})</th>
+        <th>Actions</th>
+    </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
@@ -42,46 +36,61 @@
                 </td>
                 <td>
                     @Html.ActionLink(item.RoomName,
-                        "Details",
-                        "Rooms",
-                        new
-                        {
-                            id = item.RoomId
-                        }, null)
+                "Details",
+                "Rooms",
+                new
+                {
+                id = item.RoomId
+                }, null)
                 </td>
                 <td>
                     @Html.ActionLink(item.DoctorFullName,
-                        "Details",
-                        "Doctors",
-                        new
-                        {
-                            id = item.DoctorId
-                        },null)
+                "Details",
+                "Doctors",
+                new
+                {
+                id = item.DoctorId
+                },null)
                 </td>
                 <td>
                     @Html.ActionLink(item.PatientFullName,
-                        "Details",
-                        "Patients",
-                        new
-                        {
-                            id = item.PatientId
-                        },null)
+                "Details",
+                "Patients",
+                new
+                {
+                id = item.PatientId
+                },null)
                 </td>
                 <td>
-@*                    @if (item.AppointmentStatus == AppointmentStatus.Available)
-                    {*@
-                        @Html.ActionLink(
-                            "Book",
-                            "BookAppointment",
-                            "Appointments",
-                            new
-                            {
-                                item.Id,
-                                item.DoctorId,
-                                item.RoomId
-                            },null
-                            )<span> | </span>
-                    @*}*@
+                    @switch (item.AppointmentStatus)
+                    {
+                        case AppointmentStatus.Available:
+                            @Html.ActionLink(
+                "Book",
+                "BookAppointment",
+                "Appointments",
+                new
+                {
+                item.Id,
+                item.DoctorId,
+                item.RoomId
+                }, null
+                )<span> | </span>
+                            break;
+                        case AppointmentStatus.Booked:
+                            @Html.ActionLink(
+                "Free",
+                "BookAppointment",
+                "Appointments",
+                new
+                {
+                item.Id,
+                item.DoctorId,
+                item.RoomId
+                }, null
+                )<span> | </span>
+                            break;
+                    }
                     <a asp-action="AdminEdit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
@@ -90,3 +99,6 @@
         }
     </tbody>
 </table>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page,sortOrder = ViewBag.DateSortOrder }))

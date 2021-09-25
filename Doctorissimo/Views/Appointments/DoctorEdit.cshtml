@@ -1,4 +1,4 @@
-﻿@model DAL.Models.Appointment
+﻿@model BLL.DTO.AppointmentDto;
 
 @{
     ViewData["Title"] = "Edit";
@@ -19,11 +19,11 @@
                 <span asp-validation-for="AppointmentTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Room" class="control-label"></label>
-                <input asp-for="Room" class="form-control" />
-                <span asp-validation-for="Room" class="text-danger"></span>
+                <label asp-for="RoomDto" class="control-label"></label>
+                <input asp-for="RoomDto" class="form-control" />
+                <span asp-validation-for="RoomDto" class="text-danger"></span>
             </div>
-            <div class="form-group">
+@*            <div class="form-group">
                 <label asp-for="Diagnosis" class="control-label"></label>
                 <input asp-for="Diagnosis" class="form-control" />
                 <span asp-validation-for="Diagnosis" class="text-danger"></span>
@@ -32,7 +32,7 @@
                 <label asp-for="Recommendations" class="control-label"></label>
                 <input asp-for="Recommendations" class="form-control" />
                 <span asp-validation-for="Recommendations" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

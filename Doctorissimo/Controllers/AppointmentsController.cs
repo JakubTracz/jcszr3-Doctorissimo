@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Dynamic;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using BLL.DTO;
 using BLL.IServices;
 using DAL.Enums;
-using DAL.Models;
 using Doctorissimo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace Doctorissimo.Controllers
 {
@@ -17,137 +18,152 @@ namespace Doctorissimo.Controllers
         private readonly IPatientService _patientService;
         private readonly IDoctorService _doctorService;
         private readonly IRoomService _roomService;
-        private readonly IMappingService _mappingService;
-        private readonly IMapper _mapper;
 
-        public AppointmentsController(IAppointmentService appointmentService, IPatientService patientService, IDoctorService doctorService, IRoomService roomService, IMapper mapper, IMappingService mappingService)
+        public AppointmentsController(
+            IAppointmentService appointmentService,
+            IPatientService patientService,
+            IDoctorService doctorService,
+            IRoomService roomService,
+            IMappingService mappingService)
         {
             _appointmentService = appointmentService;
             _patientService = patientService;
             _doctorService = doctorService;
             _roomService = roomService;
-            _mapper = mapper;
-            _mappingService = mappingService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentSort, string currentFilter, string searchString, int? page)
         {
-            var appointmentDtos = await _appointmentService.GetAllAppointmentsAsync();
-            var appointmentsListViewModels =  _mapper.Map<List<AppointmentDto>,List<AppointmentsListViewModel>>(appointmentDtos);
-            //var appointmentsListViewModels = appointmentDtos
-            //    .Select(a => new AppointmentsListViewModel
-            //    {      
-            //        AppointmentStatus = a.AppointmentStatus,
-            //        AppointmentTime = a.AppointmentTime,
-            //        RoomId = a.RoomDto.Id,
-            //        PatientId = a.PatientDto.Id,
-            //        DoctorId = a.DoctorDto.Id,
-            //        DoctorFullName = a.DoctorDto.FullName,
-            //        Id = a.Id,
-            //        RoomName = a.RoomDto.Name,
-            //        PatientFullName = a.PatientDto.FullName ?? string.Empty
-            //    }).ToList();
+            ViewBag.currentSort = sortOrder;
+            ViewBag.dateSortOrder = sortOrder == "date_desc" ? "date" : "date_desc";
+            ViewBag.patientSortOrder = sortOrder == "patient_desc" ? "patient" : "patient_desc";
+            ViewBag.doctorSortOrder = sortOrder == "doctor_desc" ? "doctor" : "doctor_desc";
+            ViewBag.roomSortOrder = sortOrder == "room_desc" ? "room" : "room_desc";
 
-            return View(appointmentsListViewModels);
+            var pageNumber = page ?? 1;
+            const int pageSize = 10;
+            var appointmentDtos = await _appointmentService.GetAllAppointmentsAsync();
+            switch (sortOrder)
+            {
+                case "date":
+                    appointmentDtos = await appointmentDtos.OrderBy(a => a.AppointmentTime).ToListAsync();
+                    break;
+                case "date_desc":
+                    appointmentDtos = await appointmentDtos.OrderByDescending(a => a.AppointmentTime).ToListAsync();
+                    break;
+                case "doctor":
+                    appointmentDtos = await appointmentDtos.OrderBy(a => a.DoctorDto.FullName).ToListAsync();
+                    break;
+                case "doctor_desc":
+                    appointmentDtos = await appointmentDtos.OrderByDescending(a => a.DoctorDto.FullName).ToListAsync();
+                    break;
+                case "patient":
+                    appointmentDtos = await appointmentDtos.OrderBy(a => a.PatientDto?.FullName).ToListAsync();
+                    break;
+                case "patient_desc":
+                    appointmentDtos = await appointmentDtos.OrderByDescending(a => a.PatientDto?.FullName).ToListAsync();
+                    break;
+                case "room":
+                    appointmentDtos = await appointmentDtos.OrderBy(a => a.RoomDto.Name).ToListAsync();
+                    break;
+                case "room_desc":
+                    appointmentDtos = await appointmentDtos.OrderByDescending(a => a.RoomDto.Name).ToListAsync();
+                    break;
+            };
+
+            var models = appointmentDtos
+                .Select(a => new AppointmentsListViewModel
+                {
+                    AppointmentStatus = a.AppointmentStatus,
+                    AppointmentTime = a.AppointmentTime,
+                    RoomId = a.RoomDto.Id,
+                    PatientId = a.PatientDto?.Id,
+                    DoctorId = a.DoctorDto.Id,
+                    DoctorFullName = a.DoctorDto.FullName,
+                    Id = a.Id,
+                    RoomName = a.RoomDto.Name,
+                    PatientFullName = a.PatientDto?.FullName ?? string.Empty
+                }).ToList();
+
+            return View(models.ToPagedList(pageNumber, pageSize));
         }
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return BadRequest();
             var appointmentDto = await _appointmentService.GetByIdAsync(id);
-            if (appointmentDto == null)
-            {
-                return NotFound();
-            }
-            var roomDto = await _roomService.GetRoomByIdAsync(appointmentDto.RoomId);
-            var appointment = _mappingService.MapAppointmentDtoToAppointment(appointmentDto);
-            appointment.Room = _mappingService.MapRoomDtoToRoom(roomDto);
-            return View(appointment);
+            if (appointmentDto == null) return NotFound();
+            return View(appointmentDto);
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int selectedDoctorId, int selectedRoomId, DateTime selectedAppointmentDate)
         {
             var doctorDtos = await _doctorService.GetAllDoctorsAsync();
             var roomDtos = await _roomService.GetAllRoomsAsync();
-            var doctors = _mappingService.MapDoctorDtosToDoctorsList(doctorDtos);
-            var rooms = _mappingService.MapRoomDtosToRoomsList(roomDtos);
 
-            var createAppointmentViewModel = new CreateAppointmentViewModel { Doctors = doctors, Rooms = rooms };
-            return View(createAppointmentViewModel);
+            if (selectedAppointmentDate == default) selectedAppointmentDate = DateTime.Now;
+
+            var model = new CreateAppointmentViewModel
+            {
+                Doctors = doctorDtos,
+                Rooms = roomDtos,
+                SelectedRoomId = selectedRoomId,
+                SelectedDoctorId = selectedDoctorId,
+                Appointment = new AppointmentDto { AppointmentTime = selectedAppointmentDate }
+            };
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateAppointmentViewModel createAppointmentViewModel)
+        public async Task<IActionResult> Create(CreateAppointmentViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                var doctorDtos = await _doctorService.GetAllDoctorsAsync();
-                var roomDtos = await _roomService.GetAllRoomsAsync();
-                var doctors = _mappingService.MapDoctorDtosToDoctorsList(doctorDtos);
-                var rooms = _mappingService.MapRoomDtosToRoomsList(roomDtos);
-                createAppointmentViewModel.Doctors = doctors;
-                createAppointmentViewModel.Rooms = rooms;
-                return View(createAppointmentViewModel);
+                return RedirectToAction(nameof(Create), new
+                {
+                    selectedDoctorId = model.SelectedDoctorId,
+                    selectedRoomId = model.SelectedRoomId,
+                    selectedAppointmentDate = model.Appointment.AppointmentTime
+                });
             }
 
-            var appointment = createAppointmentViewModel.Appointment;
-            appointment.DoctorId = createAppointmentViewModel.SelectedDoctorId;
-            appointment.RoomId = createAppointmentViewModel.SelectedRoomId;
-            var appointmentDto = _mappingService.MapAppointmentToAppointmentDto(appointment);
-
+            var appointmentDto = model.Appointment;
+            appointmentDto.DoctorId = model.SelectedDoctorId;
+            appointmentDto.RoomId = model.SelectedRoomId;
             await _appointmentService.CreateAsync(appointmentDto);
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> DoctorEdit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return BadRequest();
 
             var appointmentDto = await _appointmentService.GetByIdAsync(id);
 
-            if (appointmentDto == null)
-            {
-                return NotFound();
-            }
+            if (appointmentDto == null) return NotFound();
 
-            var appointment = _mappingService.MapAppointmentDtoToAppointment(appointmentDto);
-            return View(appointment);
+            return View(appointmentDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DoctorEdit(int id, AppointmentDto appointmentDto)
         {
-            if (id != appointmentDto.Id)
-            {
-                return NotFound();
-            }
-            var appointment = _mappingService.MapAppointmentDtoToAppointment(appointmentDto);
-            if (!ModelState.IsValid) return View(appointment);
+            if (id != appointmentDto.Id) return BadRequest();
+            if (!ModelState.IsValid) return View(appointmentDto);
+
             await _appointmentService.UpdateAsync(id, appointmentDto);
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> AdminEdit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return BadRequest();
 
             var appointmentDto = await _appointmentService.GetByIdAsync(id);
-            if (appointmentDto == null)
-            {
-                return NotFound();
-            }
+
+            if (appointmentDto == null) return NotFound();
 
             var doctorDtos = await _doctorService.GetAllDoctorsAsync();
             var patientDtos = await _patientService.GetAllPatientsAsync();
@@ -156,43 +172,31 @@ namespace Doctorissimo.Controllers
             var roomDto = await _roomService.GetRoomByIdAsync(appointmentDto.RoomDto.Id);
             var patientDto = await _patientService.GetPatientByIdAsync(appointmentDto.PatientDto.Id);
 
-            var appointment = _mappingService.MapAppointmentDtoToAppointment(appointmentDto);
-            var patients = _mappingService.MapPatientDtosToPatientsList(patientDtos);
-            var doctors = _mappingService.MapDoctorDtosToDoctorsList(doctorDtos);
-            var rooms = _mappingService.MapRoomDtosToRoomsList(roomDtos);
-            var selectedDoctor = _mappingService.MapDoctorDtoToDoctor(doctorDto);
-            var selectedPatient = _mappingService.MapPatientDtoToPatient(patientDto);
-            var selectedRoom = _mappingService.MapRoomDtoToRoom(roomDto);
-            var adminEditAppointmentViewModel = new AdminEditAppointmentViewModel
+            var model = new AdminEditAppointmentViewModel
             {
-                Appointment = appointment,
-                Room = selectedRoom,
-                Doctors = doctors,
-                Rooms = rooms,
-                Doctor = selectedDoctor,
-                Patient = selectedPatient,
-                Patients = patients
+                Appointment = appointmentDto,
+                Room = roomDto,
+                Doctors = doctorDtos,
+                Rooms = roomDtos,
+                Doctor = doctorDto,
+                Patient = patientDto,
+                Patients = patientDtos
             };
-            return View(adminEditAppointmentViewModel);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AdminEdit(int id, AdminEditAppointmentViewModel adminEditAppointmentViewModel)
+        public async Task<IActionResult> AdminEdit(int id, AdminEditAppointmentViewModel model)
         {
-            var appointment = adminEditAppointmentViewModel.Appointment;
-            var appointmentDto = _mapper.Map<Appointment, AppointmentDto>(appointment);
+            var appointmentDto = model.Appointment;
             try
             {
                 await _appointmentService.UpdateAsync(id, appointmentDto);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_appointmentService.CheckIfExists(appointmentDto.Id))
-                {
-                    return NotFound();
-                }
-
+                if (!_appointmentService.CheckIfExists(appointmentDto.Id)) return NotFound();
                 throw;
             }
             return RedirectToAction(nameof(Index));
@@ -200,18 +204,13 @@ namespace Doctorissimo.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return BadRequest();
 
             var appointmentDto = await _appointmentService.GetByIdAsync(id);
-            if (appointmentDto == null)
-            {
-                return NotFound();
-            }
-            var appointment = _mappingService.MapAppointmentDtoToAppointment(appointmentDto);
-            return View(appointment);
+
+            if (appointmentDto == null) return NotFound();
+
+            return View(appointmentDto);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -222,49 +221,37 @@ namespace Doctorissimo.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        public async Task<IActionResult> BookAppointment(int id, int doctorId, int roomId)
+        public async Task<IActionResult> BookAppointment(int id)
         {
-            {
-                var appointmentDto = await _appointmentService.GetByIdAsync(id);
-                if (appointmentDto == null)
-                {
-                    return NotFound();
-                }
-                var patientDtos = await _patientService.GetAllPatientsAsync();
-                if (patientDtos == null)
-                {
-                    return NotFound();
-                }
+            var appointmentDto = await _appointmentService.GetByIdAsync(id);
+            var patientDtos = await _patientService.GetAllPatientsAsync();
 
-                var appointment = _mappingService.MapAppointmentDtoToAppointment(appointmentDto);
-                var patients = _mappingService.MapPatientDtosToPatientsList(patientDtos);
-                BookAppointmentViewModel bookAppointmentViewModel = new()
-                {
-                    Appointment = appointment,
-                    Patients = patients,
-                    
-                };
-                return View(bookAppointmentViewModel);
-            }
+            if (appointmentDto == null || patientDtos == null) return NotFound();
+
+            BookAppointmentViewModel bookAppointmentViewModel = new()
+            {
+                Appointment = appointmentDto,
+                Patients = patientDtos,
+            };
+            return View(bookAppointmentViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> BookAppointment(BookAppointmentViewModel bookAppointmentViewModel)
+        public async Task<IActionResult> BookAppointment(BookAppointmentViewModel model)
         {
-            var appointmentBooked =
-                _appointmentService.CheckIfAppointmentIsBooked(bookAppointmentViewModel.Appointment.Id);
+            var appointmentBooked = _appointmentService.CheckIfAppointmentIsBooked(model.Appointment.Id);
             if (!ModelState.IsValid || appointmentBooked)
             {
                 var patientDtos = await _patientService.GetAllPatientsAsync();
-                var patients = _mappingService.MapPatientDtosToPatientsList(patientDtos);
-                bookAppointmentViewModel.Patients = patients;
+                model.Patients = patientDtos;
                 ViewBag.AppointmentStatus = AppointmentStatus.Booked;
-                return View(bookAppointmentViewModel);
+                return View(model);
+                //return RedirectToAction(nameof(BookAppointment()));
             }
 
-            var appointment = bookAppointmentViewModel.Appointment;
-            await _appointmentService.AssignPatientToAppointment(appointment.Id, bookAppointmentViewModel.SelectedPatientId);
+            var appointment = model.Appointment;
+            await _appointmentService.AssignPatientToAppointment(appointment.Id, model.SelectedPatientId);
             return RedirectToAction(nameof(Index));
         }
     }
